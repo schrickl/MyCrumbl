@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:my_crumbl/screens/wrapper.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyCrumbl());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyCrumbl extends StatelessWidget {
+  const MyCrumbl({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+    return const MaterialApp(
+      home: Wrapper(),
     );
   }
 }
