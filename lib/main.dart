@@ -1,7 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/screens/wrapper.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:my_crumbl/pages/authenticate/auth_page.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyCrumbl());
 }
 
@@ -11,8 +21,22 @@ class MyCrumbl extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Wrapper(),
+    return StreamProvider<User?>.value(
+      value: FirebaseAuth.instance.authStateChanges(),
+      initialData: null,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: _buildTheme(Brightness.light),
+        home: const AuthPage(),
+      ),
+    );
+  }
+
+  ThemeData _buildTheme(brightness) {
+    var baseTheme = ThemeData(brightness: brightness);
+
+    return baseTheme.copyWith(
+      textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
     );
   }
 }

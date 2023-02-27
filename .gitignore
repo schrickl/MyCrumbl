@@ -8,6 +8,7 @@ build/
 
 # Local configuration file (sdk path, etc)
 local.properties
+*.csv
 
 # Log/OS Files
 *.log
@@ -32,6 +33,9 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+GoogleService-Info.plist
+ios/firebase_app_id_file.json
+lib/firebase_options.dart
 
 # Android Profiling
 *.hprof
@@ -181,5 +185,7 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+**/.DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/android,dart,kotlin,swift
