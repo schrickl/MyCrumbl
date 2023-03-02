@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                             prefixIcon: const Icon(Icons.email),
                             validator: (val) => EmailValidator.validate(val!)
                                 ? null
-                                : "Please enter a valid email"),
+                                : 'Please enter a valid email'),
                         const SizedBox(height: 10.0),
                         MyCrumblTextFormField(
                           controller: _passwordController,
