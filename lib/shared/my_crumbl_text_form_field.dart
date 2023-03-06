@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'colors.dart';
+import 'package:my_crumbl/shared/colors.dart';
 
 class MyCrumblTextFormField extends StatelessWidget {
   final TextEditingController? controller;
@@ -11,6 +10,7 @@ class MyCrumblTextFormField extends StatelessWidget {
   final Widget suffixIcon;
   final int errorMaxLines;
   final TextInputType? keyboardType;
+  final Function(String)? onChanged;
 
   const MyCrumblTextFormField({
     super.key,
@@ -22,6 +22,7 @@ class MyCrumblTextFormField extends StatelessWidget {
     this.suffixIcon = const SizedBox(),
     this.errorMaxLines = 1,
     required this.keyboardType,
+    this.onChanged,
   });
 
   @override
@@ -30,6 +31,7 @@ class MyCrumblTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      onChanged: onChanged,
       validator: validator,
       decoration: InputDecoration(
         errorMaxLines: errorMaxLines,

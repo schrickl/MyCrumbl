@@ -50,7 +50,7 @@ class _CookiePageState extends State<CookiePage> {
         future: _firestore.fetchAllCookies(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<CookieModel> cookieList = snapshot.data!;
+            final List<CookieModel> cookieList = snapshot.data!;
             return ListView.separated(
               padding: const EdgeInsets.all(8.0),
               separatorBuilder: (context, index) =>
@@ -91,7 +91,6 @@ Widget buildRow({required context, required CookieModel cookie}) {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Flexible(
-          flex: 0,
           child: SizedBox(
             width: 50,
             height: 50,
@@ -105,10 +104,10 @@ Widget buildRow({required context, required CookieModel cookie}) {
             ),
           ),
         ),
-        Flexible(
-          flex: 1,
+        const SizedBox(width: 10),
+        Expanded(
+          flex: 2,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 cookie.displayName,
@@ -123,6 +122,7 @@ Widget buildRow({required context, required CookieModel cookie}) {
                 allowHalfRating: true,
                 itemCount: 5,
                 itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemSize: MediaQuery.of(context).size.width / 16,
                 itemBuilder: (context, _) => const Icon(
                   Icons.cookie,
                   color: CrumblColors.primary,
@@ -134,8 +134,8 @@ Widget buildRow({required context, required CookieModel cookie}) {
             ],
           ),
         ),
-        Flexible(
-          flex: 0,
+        const SizedBox(width: 10),
+        Expanded(
           child: FavoriteButton(
             iconColor: Colors.grey[100],
             iconDisabledColor: Colors.red,

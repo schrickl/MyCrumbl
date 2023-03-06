@@ -5,9 +5,17 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late AuthResultStatus _status = AuthResultStatus.successful;
 
+  User? get currentUser {
+    return _auth.currentUser;
+  }
+
+  Stream<User?> get user {
+    return _auth.authStateChanges();
+  }
+
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential credential = await _auth.signInWithEmailAndPassword(
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (credential.user != null) {
         _status = AuthResultStatus.successful;
@@ -22,8 +30,8 @@ class AuthService {
 
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final UserCredential credential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       if (credential.user != null) {
         _status = AuthResultStatus.successful;
       } else {

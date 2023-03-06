@@ -3,14 +3,16 @@ import 'package:my_crumbl/models/cookie_model.dart';
 
 class FirestoreService {
   final CollectionReference cookieCollection =
-      FirebaseFirestore.instance.collection('cookies');
+      FirebaseFirestore.instance.collection('cookies_tst');
 
   Future<List<CookieModel>> fetchAllCookies() async {
-    List<CookieModel> cookies = [];
+    final List<CookieModel> cookies = [];
+
     await cookieCollection.get().then(
       (querySnapshot) {
-        for (var docSnapshot in querySnapshot.docs) {
-          cookies.add(CookieModel.fromFirestore(docSnapshot));
+        for (final docSnapshot in querySnapshot.docs) {
+          cookies.add(CookieModel.fromFirestore(
+              docSnapshot as DocumentSnapshot<Map<String, dynamic>>, null));
           if (cookies.length > 10) {
             break;
           }

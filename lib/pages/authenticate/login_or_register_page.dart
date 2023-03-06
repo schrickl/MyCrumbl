@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_crumbl/pages/authenticate/login_page.dart';
 import 'package:my_crumbl/pages/authenticate/register_page.dart';
-
-import 'login_page.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({Key? key}) : super(key: key);

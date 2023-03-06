@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^4.4.3
   cupertino_icons: ^1.0.2
   email_validator: ^2.1.17
+  equatable: ^2.0.5
   favorite_button: ^0.0.4
   firebase_auth: ^4.2.9
   firebase_core: ^2.7.0
@@ -48,6 +49,8 @@ dependencies:
   google_fonts: ^4.0.3
   lints: ^2.0.1
   provider: ^6.0.5
+  searchable_listview: ^2.2.2
+  toggle_switch: ^2.0.1
   tutorial_coach_mark: ^1.2.6
 
 dev_dependencies:
