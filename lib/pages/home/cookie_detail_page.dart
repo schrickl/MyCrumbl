@@ -7,7 +7,7 @@ import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/services/firestore_service.dart';
 import 'package:my_crumbl/services/storage_service.dart';
 import 'package:my_crumbl/shared/colors.dart';
-import 'package:my_crumbl/shared/loading.dart';
+import 'package:my_crumbl/shared/loading_page.dart';
 
 class CookieDetailPage extends StatefulWidget {
   final CookieModel cookie;
@@ -54,7 +54,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                         height: MediaQuery.of(context).size.height * 0.5,
                         fit: BoxFit.cover,
                         alignment: Alignment.topCenter,
-                        placeholder: (context, url) => const Loading(),
+                        placeholder: (context, url) => const LoadingPage(),
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
                       ),
@@ -116,7 +116,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           } else {
-            return const Loading();
+            return const LoadingPage();
           }
         },
       ),

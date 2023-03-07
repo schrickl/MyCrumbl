@@ -5,17 +5,18 @@ class FirestoreService {
   final CollectionReference cookieCollection =
       FirebaseFirestore.instance.collection('cookies_tst');
 
+  //FirebaseFirestore.instance.collection('cookies');
+
   Future<List<CookieModel>> fetchAllCookies() async {
     final List<CookieModel> cookies = [];
 
     await cookieCollection.get().then(
       (querySnapshot) {
         for (final docSnapshot in querySnapshot.docs) {
-          cookies.add(CookieModel.fromFirestore(
-              docSnapshot as DocumentSnapshot<Map<String, dynamic>>, null));
-          if (cookies.length > 10) {
-            break;
-          }
+          cookies.add(
+            CookieModel.fromFirestore(
+                docSnapshot as DocumentSnapshot<Map<String, dynamic>>, null),
+          );
         }
       },
       onError: (e) => print('Error completing: $e'),

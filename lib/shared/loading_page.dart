@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/shared/colors.dart';
 
-class Loading extends StatelessWidget {
-  const Loading({super.key});
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({super.key});
 
   @override
   Widget build(BuildContext context) {

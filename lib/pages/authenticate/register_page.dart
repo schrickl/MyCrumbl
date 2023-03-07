@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/shared/auth_exception_handler.dart';
 import 'package:my_crumbl/shared/colors.dart';
-import 'package:my_crumbl/shared/loading.dart';
+import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:my_crumbl/shared/my_crumbl_text_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Loading()
+        ? const LoadingPage()
         : Scaffold(
             backgroundColor: Colors.grey[50],
             body: SafeArea(

@@ -10,6 +10,7 @@ class CookieModel extends Equatable {
   final double? rating;
   final bool isCurrent;
   final bool? isFavorite;
+  final String? lastSeen;
 
   const CookieModel({
     required this.assetName,
@@ -20,6 +21,7 @@ class CookieModel extends Equatable {
     required this.rating,
     required this.isCurrent,
     required this.isFavorite,
+    required this.lastSeen,
   });
 
   // Create a CookieModel object from a Firestore DocumentSnapshot
@@ -37,6 +39,7 @@ class CookieModel extends Equatable {
       rating: data?['rating'] ?? 0,
       isCurrent: data?['isCurrent'] ?? false,
       isFavorite: data?['isFavorite'] ?? false,
+      lastSeen: data?['lastSeen'] ?? '',
     );
   }
 
@@ -51,6 +54,7 @@ class CookieModel extends Equatable {
       if (rating != null) 'rating': rating,
       'isCurrent': isCurrent,
       if (isFavorite != null) 'isFavorite': isFavorite,
+      if (lastSeen != null) 'lastSeen': lastSeen,
     };
   }
 
@@ -64,7 +68,8 @@ class CookieModel extends Equatable {
         'storageLocation: $storageLocation, '
         'rating: $rating, '
         'isCurrent: $isCurrent, '
-        'isFavorite: $isFavorite,}';
+        'isFavorite: $isFavorite, '
+        'lastSeen: $lastSeen}';
   }
 
   @override
@@ -77,5 +82,6 @@ class CookieModel extends Equatable {
         rating,
         isCurrent,
         isFavorite,
+        lastSeen,
       ];
 }
