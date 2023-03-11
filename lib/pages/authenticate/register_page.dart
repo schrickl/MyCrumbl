@@ -71,6 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             keyboardType: TextInputType.emailAddress,
                             obscureText: false,
                             prefixIcon: const Icon(Icons.email),
+                            textInputAction: TextInputAction.next,
                             validator: (val) => EmailValidator.validate(val!)
                                 ? null
                                 : 'Please enter a valid email'),
@@ -90,6 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             onPressed: togglePasswordVisibility,
                           ),
+                          textInputAction: TextInputAction.next,
                           validator: (val) => val!.length < 6 || val.length > 20
                               ? 'Password must be between 6 and 20 characters'
                               : null,
@@ -110,6 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             onPressed: togglePasswordVisibility,
                           ),
+                          textInputAction: TextInputAction.done,
                           validator: (val) => val != _passwordController.text
                               ? 'Passwords do not match'
                               : null,

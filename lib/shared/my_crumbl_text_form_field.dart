@@ -10,6 +10,7 @@ class MyCrumblTextFormField extends StatelessWidget {
   final Widget suffixIcon;
   final int errorMaxLines;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final Function(String)? onChanged;
 
   const MyCrumblTextFormField({
@@ -22,6 +23,7 @@ class MyCrumblTextFormField extends StatelessWidget {
     this.suffixIcon = const SizedBox(),
     this.errorMaxLines = 1,
     required this.keyboardType,
+    this.textInputAction = TextInputAction.done,
     this.onChanged,
   });
 
@@ -32,6 +34,7 @@ class MyCrumblTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       onChanged: onChanged,
+      textInputAction: textInputAction,
       validator: validator,
       decoration: InputDecoration(
         errorMaxLines: errorMaxLines,

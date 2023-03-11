@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class CookieModel extends Equatable {
@@ -7,12 +6,12 @@ class CookieModel extends Equatable {
   final String description;
   final String displayName;
   final String storageLocation;
-  final double? rating;
+  late final double? rating;
   final bool isCurrent;
-  final bool? isFavorite;
+  late final bool? isFavorite;
   final String? lastSeen;
 
-  const CookieModel({
+  CookieModel({
     required this.assetName,
     required this.assetPath,
     required this.description,
@@ -24,52 +23,40 @@ class CookieModel extends Equatable {
     required this.lastSeen,
   });
 
-  // Create a CookieModel object from a Firestore DocumentSnapshot
-  factory CookieModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data();
+  factory CookieModel.fromJson(Map<String, dynamic> json) {
     return CookieModel(
-      assetName: data?['assetName'] ?? '',
-      assetPath: data?['assetPath'] ?? '',
-      description: data?['description'] ?? '',
-      displayName: data?['displayName'] ?? '',
-      storageLocation: data?['storageLocation'] ?? '',
-      rating: data?['rating'] ?? 0,
-      isCurrent: data?['isCurrent'] ?? false,
-      isFavorite: data?['isFavorite'] ?? false,
-      lastSeen: data?['lastSeen'] ?? '',
+      assetName: json['assetName'],
+      assetPath: json['assetPath'],
+      description: json['description'],
+      displayName: json['displayName'],
+      storageLocation: json['storageLocation'],
+      rating: double.parse(json['rating'].toString()),
+      isCurrent: json['isCurrent'],
+      isFavorite: json['isFavorite'],
+      lastSeen: json['lastSeen'],
     );
   }
 
-  // Convert a CookieModel object to a map for Firestore
-  Map<String, dynamic> toFirestore() {
-    return {
-      'assetName': assetName,
-      'assetPath': assetPath,
-      'description': description,
-      'displayName': displayName,
-      'storageLocation': storageLocation,
-      if (rating != null) 'rating': rating,
-      'isCurrent': isCurrent,
-      if (isFavorite != null) 'isFavorite': isFavorite,
-      if (lastSeen != null) 'lastSeen': lastSeen,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'assetName': assetName,
+        'assetPath': assetPath,
+        'description': description,
+        'displayName': displayName,
+        'storageLocation': storageLocation,
+        'rating': rating,
+        'isCurrent': isCurrent,
+        'isFavorite': isFavorite,
+        'lastSeen': lastSeen,
+      };
 
-  @override
-  String toString() {
-    return 'CookieModel{'
-        'assetName: $assetName, '
-        'assetPath: $assetPath, '
-        'description: $description, '
-        'displayName: $displayName, '
-        'storageLocation: $storageLocation, '
-        'rating: $rating, '
-        'isCurrent: $isCurrent, '
-        'isFavorite: $isFavorite, '
-        'lastSeen: $lastSeen}';
+  static List<CookieModel> fromJsonArray(List<dynamic> jsonArray) {
+    final List<CookieModel> cookiesFromJson = [];
+
+    for (final jsonData in jsonArray) {
+      cookiesFromJson.add(CookieModel.fromJson(jsonData));
+    }
+
+    return cookiesFromJson;
   }
 
   @override
@@ -84,4 +71,18 @@ class CookieModel extends Equatable {
         isFavorite,
         lastSeen,
       ];
+
+  @override
+  String toString() {
+    return 'CookieModel{'
+        'assetName: $assetName, '
+        'assetPath: $assetPath, '
+        'description: $description, '
+        'displayName: $displayName, '
+        'storageLocation: $storageLocation, '
+        'rating: $rating, '
+        'isCurrent: $isCurrent, '
+        'isFavorite: $isFavorite, '
+        'lastSeen: $lastSeen}';
+  }
 }

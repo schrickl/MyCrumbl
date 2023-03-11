@@ -3,8 +3,6 @@ import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
-import 'package:my_crumbl/services/auth_service.dart';
-import 'package:my_crumbl/services/firestore_service.dart';
 import 'package:my_crumbl/services/storage_service.dart';
 import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
@@ -19,8 +17,6 @@ class CookieDetailPage extends StatefulWidget {
 }
 
 class _CookieDetailPageState extends State<CookieDetailPage> {
-  final AuthService _auth = AuthService();
-  final FirestoreService _firestore = FirestoreService();
   final StorageService _storageService = StorageService();
   String _downloadUrl = '';
 

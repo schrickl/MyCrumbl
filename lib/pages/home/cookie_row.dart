@@ -2,8 +2,11 @@ import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
+import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_detail_page.dart';
+import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/shared/colors.dart';
+import 'package:provider/provider.dart';
 
 class CookieRow extends StatefulWidget {
   final TextEditingController controller;
@@ -17,10 +20,14 @@ class CookieRow extends StatefulWidget {
 }
 
 class _CookieRowState extends State<CookieRow> {
-  final bool isFavorite = true;
+  bool get isFavorite => false;
 
   @override
   Widget build(BuildContext context) {
+    final UserModel? currentUser = Provider.of<UserModel>(context);
+    final DataRepository _dataRepository =
+        DataRepository(uid: currentUser!.uid);
+
     return GestureDetector(
       onTap: () {
         widget.controller.clear();
@@ -72,7 +79,8 @@ class _CookieRowState extends State<CookieRow> {
                     color: CrumblColors.primary,
                   ),
                   onRatingUpdate: (rating) {
-                    //cookie.rating = rating;
+                    widget.cookie.rating = rating;
+                    _dataRepository.addUserData(widget.cookie);
                   },
                 ),
               ],
@@ -85,7 +93,12 @@ class _CookieRowState extends State<CookieRow> {
               iconDisabledColor: Colors.red,
               isFavorite: isFavorite,
               valueChanged: (_) {
-                //cookie.isFavorite = !cookie.isFavorite;
+                if (widget.cookie.isFavorite != null) {
+                  widget.cookie.isFavorite = !widget.cookie.isFavorite!;
+                } else {
+                  widget.cookie.isFavorite = true;
+                }
+                _dataRepository.addUserData(widget.cookie);
               },
             ),
           ),
