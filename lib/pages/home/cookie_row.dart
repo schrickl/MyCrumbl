@@ -79,7 +79,7 @@ class _CookieRowState extends State<CookieRow> {
                     color: CrumblColors.primary,
                   ),
                   onRatingUpdate: (rating) {
-                    widget.cookie.rating = rating;
+                    widget.cookie.rating = rating.toString();
                     _dataRepository.addUserData(widget.cookie);
                   },
                 ),

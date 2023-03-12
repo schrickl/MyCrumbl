@@ -11,77 +11,68 @@ class DataRepository {
 
   final FirebaseFirestore _instance = FirebaseFirestore.instance;
 
-  Stream<List<CookieModel>> get cookies {
+  // Stream<List<CookieModel>> get cookies {
+  //   final cookies = _instance.collection('cookies_tst');
+  //   final userData = _instance.collection('user_data');
+  //
+  //   fetchUserDataModel(uid);
+  //
+  //   return;
+  // }
+
+  // Stream<List<CookieModel>> get cookieStream {
+  //   return Stream.fromFuture(cookies);
+  // }
+
+  Future<UserDataModel> fetchUserDataModel(String? uid) async {
+    UserDataModel model = UserDataModel.defaultUser;
+    final CollectionReference userDataRef = _instance.collection('user_data');
+    final documentReference = userDataRef.doc(uid);
+    final snapshot = await documentReference.get();
+    final data = snapshot.data();
+    if (data != null) {
+      model = UserDataModel.fromJson(data as Map<String, dynamic>);
+      print(model);
+    }
+    return model;
+  }
+
+  Stream<List<CookieModel>> get cookies async* {
+    UserDataModel model = UserDataModel.defaultUser;
     final cookies = _instance.collection('cookies_tst');
-    return cookies.snapshots().map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.map((doc) {
-          return CookieModel(
-            assetName: doc.data()['assetName'],
-            assetPath: doc.data()['assetPath'],
-            displayName: doc.data()['displayName'],
-            description: doc.data()['description'],
-            rating: doc.data()['rating'],
-            isCurrent: doc.data()['isCurrent'],
-            isFavorite: doc.data()['isFavorite'],
-            lastSeen: doc.data()['lastSeen'],
-            storageLocation: doc.data()['storageLocation'],
-          );
-        }).toList();
-      } else {
-        return [];
-      }
-    });
+    final userData = _instance.collection('user_data');
 
-    // return FirebaseFirestore.instance
-    //     .collection('cookies_tst')
-    //     .snapshots()
-    //     .map((snapshot) {
-    //   return snapshot.docs.map((doc) {
-    //     return CookieModel(
-    //       assetName: doc.data()['assetName'],
-    //       assetPath: doc.data()['assetPath'],
-    //       displayName: doc.data()['displayName'],
-    //       description: doc.data()['description'],
-    //       rating: doc.data()['rating'],
-    //       isCurrent: doc.data()['isCurrent'],
-    //       isFavorite: doc.data()['isFavorite'],
-    //       lastSeen: doc.data()['lastSeen'],
-    //       storageLocation: doc.data()['storageLocation'],
-    //     );
-    //   }).toList();
-    // });
-  }
+    model = await fetchUserDataModel(uid);
 
-  Stream<List<CookieModel>> get myCookies {
-    final categories = _instance.collection('user_data');
-
-    return categories.doc(uid).snapshots().map((snapshot) {
-      if (snapshot.exists) {
-        final data = snapshot.data() as Map<String, dynamic>;
-        final categoriesData = data['myCookies'] as List<dynamic>;
-        final categoriesList = categoriesData
-            .map((catData) => CookieModel.fromJson(catData))
-            .toList();
-        return categoriesList;
-      } else {
-        return [];
-      }
-    });
-  }
-
-  Future<void> addPrePopData(UserDataModel userData) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('user_data')
-          .doc(userData.uid)
-          .set({
-        'uid': userData.uid,
-        'defaultView': userData.defaultView.toString(),
-        'myCookies': userData.myCookies?.map((c) => c.toJson()).toList(),
+    if (model.defaultView == UserDataModel.defaultViewAll) {
+      yield* cookies.snapshots().map((snapshot) {
+        if (snapshot.docs.isNotEmpty) {
+          return snapshot.docs
+              .map((doc) => CookieModel.fromJson(doc.data()))
+              .toList();
+        } else {
+          return [];
+        }
       });
-    } catch (e) {
-      print('Error adding user data: $e');
+    } else {
+      yield* userData.doc(uid).snapshots().map((snapshot) {
+        if (snapshot.exists) {
+          final data = snapshot.data() as Map<String, dynamic>;
+          final cookieData = data['myCookies'] as List<dynamic>;
+          final cookieList =
+              cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
+          if (model.defaultView == UserDataModel.defaultViewFavorites) {
+            return cookieList.where((element) => element.isFavorite).toList();
+          } else if (model.defaultView == UserDataModel.defaultViewRated) {
+            return cookieList
+                .where((element) => double.parse(element.rating!) > 0)
+                .toList();
+          }
+          return cookieList;
+        } else {
+          return [];
+        }
+      });
     }
   }
 

@@ -15,15 +15,7 @@ class CookieList extends StatefulWidget {
 
 class _CookieListState extends State<CookieList> {
   final _searchBarController = TextEditingController();
-  Future<List<CookieModel>> _allCookieList = Future.value([]);
   List<CookieModel> _filteredCookieList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    //_allCookieList = _firestore.fetchAllCookies();
-    _filteredCookieList = [];
-  }
 
   @override
   void dispose() {
@@ -31,26 +23,26 @@ class _CookieListState extends State<CookieList> {
     super.dispose();
   }
 
-  // List<CookieModel> _updateFilteredItems(
-  //     String value, List<CookieModel> items) {
-  //   if (value.isEmpty) {
-  //     _filteredCookieList = items;
-  //   } else {
-  //     _filteredCookieList = items
-  //         .where(
-  //           (item) => item.displayName.toLowerCase().contains(
-  //                 value.toLowerCase(),
-  //               ),
-  //         )
-  //         .toList();
-  //   }
-  //   return _filteredCookieList;
-  // }
+  List<CookieModel> _updateFilteredItems(
+      String value, List<CookieModel> items) {
+    if (value.isEmpty) {
+      _filteredCookieList = items;
+    } else {
+      _filteredCookieList = items
+          .where(
+            (item) => item.displayName.toLowerCase().contains(
+                  value.toLowerCase(),
+                ),
+          )
+          .toList();
+    }
+    return _filteredCookieList;
+  }
 
   @override
   Widget build(BuildContext context) {
     final cookies = Provider.of<List<CookieModel>>(context);
-    _filteredCookieList = cookies;
+
     return Column(
       children: [
         ToggleSwitch(
@@ -91,13 +83,8 @@ class _CookieListState extends State<CookieList> {
           keyboardType: TextInputType.text,
           onChanged: (value) {
             setState(() {
-              _filteredCookieList = cookies
-                  .where(
-                    (item) => item.displayName.toLowerCase().contains(
-                          value.toLowerCase(),
-                        ),
-                  )
-                  .toList();
+              print('fil: ' + _filteredCookieList.length.toString());
+              _updateFilteredItems(value, cookies);
             });
           },
         ),
@@ -108,10 +95,15 @@ class _CookieListState extends State<CookieList> {
                 const Divider(color: CrumblColors.bright1, thickness: 2.0),
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
-            itemCount: cookies.length,
+            itemCount: _filteredCookieList.isNotEmpty
+                ? _filteredCookieList.length
+                : cookies.length,
             itemBuilder: (context, index) {
               return CookieRow(
-                  controller: _searchBarController, cookie: cookies[index]);
+                  controller: _searchBarController,
+                  cookie: _filteredCookieList.isNotEmpty
+                      ? _filteredCookieList[index]
+                      : cookies[index]);
             },
           ),
         ),

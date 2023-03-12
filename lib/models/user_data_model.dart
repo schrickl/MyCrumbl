@@ -32,6 +32,11 @@ class UserDataModel extends Equatable {
     required this.myCookies,
   });
 
+  static UserDataModel get defaultUser {
+    return const UserDataModel(
+        uid: null, defaultView: defaultViewAll, myCookies: <CookieModel>[]);
+  }
+
   Map<String, dynamic> toJson() => {
         'uid': uid,
         'defaultView': defaultView,
@@ -42,7 +47,7 @@ class UserDataModel extends Equatable {
     return UserDataModel(
         uid: json['uid'],
         defaultView: json['defaultView'],
-        myCookies: CookieModel.fromJsonArray(json['subCategories']));
+        myCookies: CookieModel.fromJsonArray(json['myCookies']));
   }
 
   @override

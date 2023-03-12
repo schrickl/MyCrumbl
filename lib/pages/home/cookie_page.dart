@@ -5,6 +5,7 @@ import 'package:my_crumbl/pages/home/cookie_list.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/shared/colors.dart';
+import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:provider/provider.dart';
 
 class CookiePage extends StatefulWidget {
@@ -20,41 +21,50 @@ class _CookiePageState extends State<CookiePage> {
   @override
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel>(context);
-    print(currentUser.toString());
 
     return StreamProvider<List<CookieModel>>.value(
       value: DataRepository(uid: currentUser!.uid).cookies,
       initialData: const [],
-      builder: (context, snapshot) {
-        return Scaffold(
-          backgroundColor: CrumblColors.secondary,
-          appBar: AppBar(
-            backgroundColor: CrumblColors.accentColor,
-            centerTitle: true,
-            elevation: 0.0,
-            title: const Text(
-              'MyCrumbl',
-              style: TextStyle(
-                  color: CrumblColors.bright1,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
-            ),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () async {},
-                icon: const Icon(Icons.settings, color: CrumblColors.bright1),
-              ),
-              IconButton(
-                onPressed: () async {
-                  await _auth.signOut();
-                },
-                icon: const Icon(Icons.logout, color: CrumblColors.bright1),
-              ),
-            ],
+      catchError: (_, __) => [],
+      child: Scaffold(
+        backgroundColor: CrumblColors.secondary,
+        appBar: AppBar(
+          backgroundColor: CrumblColors.accentColor,
+          centerTitle: true,
+          elevation: 0.0,
+          title: const Text(
+            'MyCrumbl',
+            style: TextStyle(
+                color: CrumblColors.bright1,
+                fontWeight: FontWeight.bold,
+                fontSize: 30),
           ),
-          body: const CookieList(),
-        );
-      },
+          actions: <Widget>[
+            IconButton(
+              onPressed: () async {},
+              icon: const Icon(Icons.settings, color: CrumblColors.bright1),
+            ),
+            IconButton(
+              onPressed: () async {
+                await _auth.signOut();
+              },
+              icon: const Icon(Icons.logout, color: CrumblColors.bright1),
+            ),
+          ],
+        ),
+        body: Center(
+          child: Consumer<List<CookieModel>>(
+            builder:
+                (BuildContext context, List<CookieModel> data, Widget? child) {
+              if (data.isEmpty) {
+                return const LoadingPage();
+              } else {
+                return const CookieList();
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }

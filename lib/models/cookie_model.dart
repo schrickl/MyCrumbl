@@ -6,9 +6,9 @@ class CookieModel extends Equatable {
   final String description;
   final String displayName;
   final String storageLocation;
-  late final double? rating;
+  late final String? rating;
   final bool isCurrent;
-  late final bool? isFavorite;
+  late final bool isFavorite;
   final String? lastSeen;
 
   CookieModel({
@@ -30,10 +30,10 @@ class CookieModel extends Equatable {
       description: json['description'],
       displayName: json['displayName'],
       storageLocation: json['storageLocation'],
-      rating: double.parse(json['rating'].toString()),
+      rating: json['rating'] ?? '0',
       isCurrent: json['isCurrent'],
-      isFavorite: json['isFavorite'],
-      lastSeen: json['lastSeen'],
+      isFavorite: json['isFavorite'] ?? false,
+      lastSeen: json['lastSeen'] ?? 'Not Seen',
     );
   }
 
