@@ -1,113 +1,102 @@
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/models/cookie_model.dart';
-import 'package:my_crumbl/pages/home/cookie_row.dart';
+import 'package:my_crumbl/models/user_data_model.dart';
+import 'package:my_crumbl/pages/tabs/all_cookies_tab.dart';
+import 'package:my_crumbl/pages/tabs/favorite_cookies_tab.dart';
+import 'package:my_crumbl/pages/tabs/rated_cookies_tab.dart';
+import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/shared/colors.dart';
-import 'package:my_crumbl/shared/my_crumbl_text_form_field.dart';
 import 'package:provider/provider.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class CookieList extends StatefulWidget {
-  const CookieList({Key? key}) : super(key: key);
+  final String index;
+
+  const CookieList({super.key, required this.index});
 
   @override
   State<CookieList> createState() => _CookieListState();
 }
 
-class _CookieListState extends State<CookieList> {
-  final _searchBarController = TextEditingController();
-  List<CookieModel> _filteredCookieList = [];
+class _CookieListState extends State<CookieList>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late int defaultIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.index == UserDataModel.defaultViewAll) {
+      defaultIndex = 0;
+    } else if (widget.index == UserDataModel.defaultViewFavorites) {
+      defaultIndex = 1;
+    } else if (widget.index == UserDataModel.defaultViewRated) {
+      defaultIndex = 2;
+    }
+    _tabController =
+        TabController(length: 3, vsync: this, initialIndex: defaultIndex);
+  }
 
   @override
   void dispose() {
-    _searchBarController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
-  List<CookieModel> _updateFilteredItems(
-      String value, List<CookieModel> items) {
-    if (value.isEmpty) {
-      _filteredCookieList = items;
-    } else {
-      _filteredCookieList = items
-          .where(
-            (item) => item.displayName.toLowerCase().contains(
-                  value.toLowerCase(),
-                ),
-          )
-          .toList();
-    }
-    return _filteredCookieList;
-  }
+  final List<Widget> tabs = const [
+    Tab(text: 'All'),
+    Tab(text: 'Favorites'),
+    Tab(text: 'Rated'),
+  ];
+
+  final List<Widget> tabBarViews = [
+    AllCookiesTab(),
+    const FavoriteCookiesTab(),
+    const RatedCookiesTab(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final cookies = Provider.of<List<CookieModel>>(context);
+    final UserModel? currentUser = Provider.of<UserModel>(context);
+    final UserDataModel? dataModel = Provider.of<UserDataModel?>(context);
 
-    return Column(
-      children: [
-        ToggleSwitch(
-          minWidth: MediaQuery.of(context).size.width * 0.8,
-          initialLabelIndex: 0,
-          totalSwitches: 3,
-          labels: const ['All', 'Favorites', 'Rating'],
-          onToggle: (index) {
-            switch (index) {
-              case 0:
-                _filteredCookieList
-                    .sort((a, b) => a.displayName.compareTo(b.displayName));
-                break;
-              case 1:
-                _filteredCookieList.sort((a, b) {
-                  if (a.isFavorite! && !b.isFavorite!) {
-                    return -1;
-                  } else if (!a.isFavorite! && b.isFavorite!) {
-                    return 1;
-                  } else {
-                    return 0;
-                  }
-                });
-                break;
-              case 2:
-                _filteredCookieList
-                    .sort((a, b) => a.rating!.compareTo(b.rating!));
-                break;
-            }
-          },
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: Column(
+          children: [
+            TabBar(
+              controller: _tabController,
+              labelColor: CrumblColors.bright1,
+              tabs: tabs,
+              onTap: (index) async {
+                print('Tab $index changed!');
+                switch (index) {
+                  case 0:
+                    await DataRepository(uid: currentUser!.uid)
+                        .updateUserDataModel(dataModel!.copyWith(
+                            defaultView: UserDataModel.defaultViewAll));
+                    break;
+                  case 1:
+                    await DataRepository(uid: currentUser!.uid)
+                        .updateUserDataModel(dataModel!.copyWith(
+                            defaultView: UserDataModel.defaultViewFavorites));
+                    break;
+                  case 2:
+                    await DataRepository(uid: currentUser!.uid)
+                        .updateUserDataModel(dataModel!.copyWith(
+                            defaultView: UserDataModel.defaultViewRated));
+                    break;
+                }
+              },
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: tabBarViews,
+              ),
+            ),
+          ],
         ),
-        MyCrumblTextFormField(
-          controller: _searchBarController,
-          hintText: 'Search for a cookie by name',
-          obscureText: false,
-          validator: null,
-          prefixIcon: const Icon(Icons.search),
-          keyboardType: TextInputType.text,
-          onChanged: (value) {
-            setState(() {
-              print('fil: ' + _filteredCookieList.length.toString());
-              _updateFilteredItems(value, cookies);
-            });
-          },
-        ),
-        Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(8.0),
-            separatorBuilder: (context, index) =>
-                const Divider(color: CrumblColors.bright1, thickness: 2.0),
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            itemCount: _filteredCookieList.isNotEmpty
-                ? _filteredCookieList.length
-                : cookies.length,
-            itemBuilder: (context, index) {
-              return CookieRow(
-                  controller: _searchBarController,
-                  cookie: _filteredCookieList.isNotEmpty
-                      ? _filteredCookieList[index]
-                      : cookies[index]);
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

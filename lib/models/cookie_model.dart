@@ -1,15 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'cookie_model.g.dart';
+
+@JsonSerializable()
 class CookieModel extends Equatable {
   final String assetName;
   final String assetPath;
   final String description;
   final String displayName;
   final String storageLocation;
-  late final String? rating;
+  String rating;
   final bool isCurrent;
-  late final bool isFavorite;
-  final String? lastSeen;
+  bool isFavorite;
+  final String lastSeen;
 
   CookieModel({
     required this.assetName,
@@ -23,31 +27,10 @@ class CookieModel extends Equatable {
     required this.lastSeen,
   });
 
-  factory CookieModel.fromJson(Map<String, dynamic> json) {
-    return CookieModel(
-      assetName: json['assetName'],
-      assetPath: json['assetPath'],
-      description: json['description'],
-      displayName: json['displayName'],
-      storageLocation: json['storageLocation'],
-      rating: json['rating'] ?? '0',
-      isCurrent: json['isCurrent'],
-      isFavorite: json['isFavorite'] ?? false,
-      lastSeen: json['lastSeen'] ?? 'Not Seen',
-    );
-  }
+  factory CookieModel.fromJson(Map<String, dynamic> json) =>
+      _$CookieModelFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'assetName': assetName,
-        'assetPath': assetPath,
-        'description': description,
-        'displayName': displayName,
-        'storageLocation': storageLocation,
-        'rating': rating,
-        'isCurrent': isCurrent,
-        'isFavorite': isFavorite,
-        'lastSeen': lastSeen,
-      };
+  Map<String, dynamic> toJson() => _$CookieModelToJson(this);
 
   static List<CookieModel> fromJsonArray(List<dynamic> jsonArray) {
     final List<CookieModel> cookiesFromJson = [];
@@ -57,6 +40,30 @@ class CookieModel extends Equatable {
     }
 
     return cookiesFromJson;
+  }
+
+  CookieModel copyWith({
+    String? assetName,
+    String? assetPath,
+    String? description,
+    String? displayName,
+    String? storageLocation,
+    String? rating,
+    bool? isCurrent,
+    bool? isFavorite,
+    String? lastSeen,
+  }) {
+    return CookieModel(
+      assetName: assetName ?? this.assetName,
+      assetPath: assetPath ?? this.assetPath,
+      description: description ?? this.description,
+      displayName: displayName ?? this.displayName,
+      storageLocation: storageLocation ?? this.storageLocation,
+      rating: rating ?? this.rating,
+      isCurrent: isCurrent ?? this.isCurrent,
+      isFavorite: isFavorite ?? this.isFavorite,
+      lastSeen: lastSeen ?? this.lastSeen,
+    );
   }
 
   @override

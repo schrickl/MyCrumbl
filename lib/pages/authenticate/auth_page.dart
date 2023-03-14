@@ -10,7 +10,6 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel?>(context);
-    print(currentUser.toString());
 
     if (currentUser == null) {
       return const LoginOrRegisterPage();

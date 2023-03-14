@@ -22,10 +22,19 @@ class _CookiePageState extends State<CookiePage> {
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel>(context);
 
-    return StreamProvider<List<CookieModel>>.value(
-      value: DataRepository(uid: currentUser!.uid).cookies,
-      initialData: const [],
-      catchError: (_, __) => [],
+    return MultiProvider(
+      providers: [
+        StreamProvider<UserDataModel?>.value(
+          value: DataRepository(uid: currentUser!.uid).userDataModel,
+          initialData: null,
+          catchError: (_, __) => UserDataModel.defaultUser,
+        ),
+        StreamProvider<List<CookieModel>>.value(
+          value: DataRepository(uid: currentUser.uid).cookies,
+          initialData: const [],
+          catchError: (_, __) => [],
+        ),
+      ],
       child: Scaffold(
         backgroundColor: CrumblColors.secondary,
         appBar: AppBar(
@@ -52,17 +61,16 @@ class _CookiePageState extends State<CookiePage> {
             ),
           ],
         ),
-        body: Center(
-          child: Consumer<List<CookieModel>>(
-            builder:
-                (BuildContext context, List<CookieModel> data, Widget? child) {
-              if (data.isEmpty) {
-                return const LoadingPage();
-              } else {
-                return const CookieList();
-              }
-            },
-          ),
+        body: Consumer2<UserDataModel?, List<CookieModel>>(
+          builder: (BuildContext context, UserDataModel? userData,
+              List<CookieModel> data, Widget? child) {
+            if (data.isEmpty) {
+              //return const Text('No cookies found');
+              return const LoadingPage();
+            } else {
+              return CookieList(index: userData?.defaultView ?? 'all');
+            }
+          },
         ),
       ),
     );

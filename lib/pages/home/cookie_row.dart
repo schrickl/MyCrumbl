@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 
 class CookieRow extends StatefulWidget {
   final TextEditingController controller;
-  final CookieModel cookie;
+  CookieModel cookie;
 
-  const CookieRow({Key? key, required this.controller, required this.cookie})
+  CookieRow({Key? key, required this.controller, required this.cookie})
       : super(key: key);
 
   @override
@@ -67,7 +67,7 @@ class _CookieRowState extends State<CookieRow> {
                 ),
                 const SizedBox(height: 5),
                 RatingBar.builder(
-                  initialRating: 0,
+                  initialRating: double.parse(widget.cookie.rating),
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
@@ -80,7 +80,7 @@ class _CookieRowState extends State<CookieRow> {
                   ),
                   onRatingUpdate: (rating) {
                     widget.cookie.rating = rating.toString();
-                    _dataRepository.addUserData(widget.cookie);
+                    _dataRepository.updateCookieModel(widget.cookie);
                   },
                 ),
               ],
@@ -91,14 +91,10 @@ class _CookieRowState extends State<CookieRow> {
             child: FavoriteButton(
               iconColor: Colors.grey[100],
               iconDisabledColor: Colors.red,
-              isFavorite: isFavorite,
+              isFavorite: widget.cookie.isFavorite,
               valueChanged: (_) {
-                if (widget.cookie.isFavorite != null) {
-                  widget.cookie.isFavorite = !widget.cookie.isFavorite!;
-                } else {
-                  widget.cookie.isFavorite = true;
-                }
-                _dataRepository.addUserData(widget.cookie);
+                widget.cookie.isFavorite = !widget.cookie.isFavorite;
+                _dataRepository.updateCookieModel(widget.cookie);
               },
             ),
           ),
