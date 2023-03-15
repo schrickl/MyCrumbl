@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_list.dart';
 import 'package:my_crumbl/services/auth_service.dart';
@@ -22,19 +21,10 @@ class _CookiePageState extends State<CookiePage> {
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel>(context);
 
-    return MultiProvider(
-      providers: [
-        StreamProvider<UserDataModel?>.value(
-          value: DataRepository(uid: currentUser!.uid).userDataModel,
-          initialData: null,
-          catchError: (_, __) => UserDataModel.defaultUser,
-        ),
-        StreamProvider<List<CookieModel>>.value(
-          value: DataRepository(uid: currentUser.uid).cookies,
-          initialData: const [],
-          catchError: (_, __) => [],
-        ),
-      ],
+    return StreamProvider<UserDataModel?>.value(
+      value: DataRepository(uid: currentUser!.uid).userDataModel,
+      initialData: null,
+      catchError: (_, __) => UserDataModel.defaultUser,
       child: Scaffold(
         backgroundColor: CrumblColors.secondary,
         appBar: AppBar(
@@ -61,15 +51,15 @@ class _CookiePageState extends State<CookiePage> {
             ),
           ],
         ),
-        body: Consumer2<UserDataModel?, List<CookieModel>>(
-          builder: (BuildContext context, UserDataModel? userData,
-              List<CookieModel> data, Widget? child) {
-            if (data.isEmpty) {
-              //return const Text('No cookies found');
-              return const LoadingPage();
-            } else {
-              return CookieList(index: userData?.defaultView ?? 'all');
+        body: Consumer<UserDataModel?>(
+          builder:
+              (BuildContext context, UserDataModel? userData, Widget? child) {
+            if (userData == null) {
+              return const Center(
+                child: LoadingPage(),
+              );
             }
+            return CookieList(index: userData.defaultView ?? 'all');
           },
         ),
       ),

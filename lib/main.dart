@@ -2,11 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_crumbl/firebase_options.dart';
+import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/authenticate/auth_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:provider/provider.dart';
-
-import 'models/user_data_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

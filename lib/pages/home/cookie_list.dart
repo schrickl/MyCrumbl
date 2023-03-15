@@ -19,20 +19,27 @@ class CookieList extends StatefulWidget {
 class _CookieListState extends State<CookieList>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late int defaultIndex;
+  late int _defaultIndex;
 
   @override
   void initState() {
     super.initState();
+
+    print('widget.index: ${widget.index}');
     if (widget.index == UserDataModel.defaultViewAll) {
-      defaultIndex = 0;
+      _defaultIndex = 0;
     } else if (widget.index == UserDataModel.defaultViewFavorites) {
-      defaultIndex = 1;
+      _defaultIndex = 1;
     } else if (widget.index == UserDataModel.defaultViewRated) {
-      defaultIndex = 2;
+      _defaultIndex = 2;
     }
     _tabController =
-        TabController(length: 3, vsync: this, initialIndex: defaultIndex);
+        TabController(length: 3, vsync: this, initialIndex: _defaultIndex);
+    _tabController.addListener(() {
+      setState(() {
+        _defaultIndex = _tabController.index;
+      });
+    });
   }
 
   @override
@@ -48,7 +55,7 @@ class _CookieListState extends State<CookieList>
   ];
 
   final List<Widget> tabBarViews = [
-    AllCookiesTab(),
+    const AllCookiesTab(),
     const FavoriteCookiesTab(),
     const RatedCookiesTab(),
   ];
@@ -68,7 +75,6 @@ class _CookieListState extends State<CookieList>
               labelColor: CrumblColors.bright1,
               tabs: tabs,
               onTap: (index) async {
-                print('Tab $index changed!');
                 switch (index) {
                   case 0:
                     await DataRepository(uid: currentUser!.uid)
