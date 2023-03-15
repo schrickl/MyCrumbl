@@ -20,7 +20,6 @@ class DataRepository {
     final data = snapshot.data();
     if (data != null) {
       model = UserDataModel.fromJson(data as Map<String, dynamic>);
-      print(model);
     }
     return model;
   }
@@ -135,12 +134,6 @@ class DataRepository {
           if (model.defaultView == UserDataModel.defaultViewFavorites) {
             return cookieList.where((element) => element.isFavorite).toList();
           } else if (model.defaultView == UserDataModel.defaultViewRated) {
-            print('rated: ' +
-                cookieList
-                    .where((element) => double.parse(element.rating) > 0)
-                    .toList()
-                    .length
-                    .toString());
             return cookieList
                 .where((element) => double.parse(element.rating) > 0)
                 .toList();
@@ -179,9 +172,7 @@ class DataRepository {
         final cookieList =
             cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
         if (model.defaultView == UserDataModel.defaultViewFavorites) {
-          return cookieList
-              .where((element) => double.parse(element.rating) > 0)
-              .toList();
+          return cookieList.where((element) => element.isFavorite).toList();
         }
         return cookieList;
       } else {
@@ -203,7 +194,9 @@ class DataRepository {
         final cookieList =
             cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
         if (model.defaultView == UserDataModel.defaultViewRated) {
-          return cookieList.where((element) => element.isFavorite).toList();
+          return cookieList
+              .where((element) => double.parse(element.rating) > 0)
+              .toList();
         }
         return cookieList;
       } else {

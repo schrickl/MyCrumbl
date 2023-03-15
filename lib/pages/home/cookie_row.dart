@@ -76,7 +76,7 @@ class _CookieRowState extends State<CookieRow> {
                   itemSize: MediaQuery.of(context).size.width / 16,
                   itemBuilder: (context, _) => const Icon(
                     Icons.cookie,
-                    color: CrumblColors.primary,
+                    color: CrumblColors.bright4,
                   ),
                   onRatingUpdate: (rating) {
                     widget.cookie.rating = rating.toString();
@@ -89,8 +89,6 @@ class _CookieRowState extends State<CookieRow> {
           const SizedBox(width: 10),
           Expanded(
             child: FavoriteButton(
-              iconColor: Colors.grey[100],
-              iconDisabledColor: Colors.red,
               isFavorite: widget.cookie.isFavorite,
               valueChanged: (_) {
                 widget.cookie.isFavorite = !widget.cookie.isFavorite;

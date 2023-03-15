@@ -25,7 +25,6 @@ class _CookieListState extends State<CookieList>
   void initState() {
     super.initState();
 
-    print('widget.index: ${widget.index}');
     if (widget.index == UserDataModel.defaultViewAll) {
       _defaultIndex = 0;
     } else if (widget.index == UserDataModel.defaultViewFavorites) {

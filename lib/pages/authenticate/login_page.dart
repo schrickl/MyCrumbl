@@ -1,6 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/pages/reset_password_page.dart';
+import 'package:my_crumbl/pages/authenticate/reset_password_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/shared/auth_exception_handler.dart';
 import 'package:my_crumbl/shared/colors.dart';
