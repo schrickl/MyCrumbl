@@ -32,16 +32,6 @@ class CookieModel extends Equatable {
 
   Map<String, dynamic> toJson() => _$CookieModelToJson(this);
 
-  static List<CookieModel> fromJsonArray(List<dynamic> jsonArray) {
-    final List<CookieModel> cookiesFromJson = [];
-
-    for (final jsonData in jsonArray) {
-      cookiesFromJson.add(CookieModel.fromJson(jsonData));
-    }
-
-    return cookiesFromJson;
-  }
-
   CookieModel copyWith({
     String? assetName,
     String? assetPath,

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:my_crumbl/models/cookie_model.dart';
 
 part 'user_data_model.g.dart';
 
@@ -27,7 +26,7 @@ class UserModel extends Equatable {
 @JsonSerializable(explicitToJson: true)
 class UserDataModel extends Equatable {
   final String? defaultView;
-  final List<CookieModel>? myCookies;
+  final List<String>? myCookies;
 
   static const defaultViewAll = 'all';
   static const defaultViewFavorites = 'favorites';
@@ -45,12 +44,12 @@ class UserDataModel extends Equatable {
 
   static UserDataModel get defaultUser {
     return const UserDataModel(
-        defaultView: defaultViewAll, myCookies: <CookieModel>[]);
+        defaultView: defaultViewAll, myCookies: <String>[]);
   }
 
   UserDataModel copyWith({
     String? defaultView,
-    List<CookieModel>? myCookies,
+    List<String>? myCookies,
   }) {
     return UserDataModel(
       defaultView: defaultView ?? this.defaultView,

@@ -86,12 +86,12 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                           widget.cookie.isFavorite = value;
                         });
                         if (widget.cookie.isFavorite) {
-                          _dataRepository.updateMyCookies(widget.cookie);
+                          _dataRepository.addOrUpdateCookie(widget.cookie);
                         } else if (!widget.cookie.isFavorite &&
                             double.parse(widget.cookie.rating) > 0) {
-                          _dataRepository.updateMyCookies(widget.cookie);
+                          _dataRepository.addOrUpdateCookie(widget.cookie);
                         } else {
-                          _dataRepository.removeFromMyCookies(widget.cookie);
+                          _dataRepository.deleteCookie(widget.cookie);
                         }
                       },
                     ),
@@ -116,7 +116,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                           setState(() {
                             widget.cookie.rating = rating.toString();
                           });
-                          _dataRepository.updateMyCookies(widget.cookie);
+                          _dataRepository.addOrUpdateCookie(widget.cookie);
                         },
                       ),
                     ),
