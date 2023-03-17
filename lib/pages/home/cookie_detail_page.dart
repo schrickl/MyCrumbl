@@ -3,9 +3,12 @@ import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
+import 'package:my_crumbl/models/user_data_model.dart';
+import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/services/storage_service.dart';
 import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
+import 'package:provider/provider.dart';
 
 class CookieDetailPage extends StatefulWidget {
   final CookieModel cookie;
@@ -22,12 +25,14 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    const bool isFavorite = true;
+    final UserModel? currentUser = Provider.of<UserModel>(context);
+    final DataRepository _dataRepository =
+        DataRepository(uid: currentUser!.uid);
 
     return Scaffold(
       backgroundColor: CrumblColors.secondary,
       appBar: AppBar(
-        title: Text(widget.cookie.displayName!),
+        title: Text(widget.cookie.displayName),
         backgroundColor: CrumblColors.primary,
         elevation: 0,
       ),
@@ -75,12 +80,19 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                       ),
                     ),
                     trailing: FavoriteButton(
-                      iconColor: Colors.grey[100],
-                      iconDisabledColor: Colors.red,
-                      isFavorite: isFavorite,
-                      valueChanged: (_) async {
-                        //widget.cookie.isFavorite = !widget.cookie.isFavorite;
-                        //await _firestore.addUserData(widget.cookie);
+                      isFavorite: widget.cookie.isFavorite,
+                      valueChanged: (value) {
+                        setState(() {
+                          widget.cookie.isFavorite = value;
+                        });
+                        if (widget.cookie.isFavorite) {
+                          _dataRepository.updateMyCookies(widget.cookie);
+                        } else if (!widget.cookie.isFavorite &&
+                            double.parse(widget.cookie.rating) > 0) {
+                          _dataRepository.updateMyCookies(widget.cookie);
+                        } else {
+                          _dataRepository.removeFromMyCookies(widget.cookie);
+                        }
                       },
                     ),
                   ),
@@ -88,20 +100,23 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(18),
                       child: RatingBar.builder(
-                        initialRating: 0,
+                        initialRating: double.parse(widget.cookie.rating),
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
                         itemCount: 5,
                         itemPadding:
                             const EdgeInsets.symmetric(horizontal: 4.0),
-                        itemSize: 65.0,
+                        itemSize: MediaQuery.of(context).size.width / 8,
                         itemBuilder: (context, _) => const Icon(
                           Icons.cookie,
-                          color: CrumblColors.primary,
+                          color: CrumblColors.bright4,
                         ),
                         onRatingUpdate: (rating) {
-                          //widget.cookie.rating = rating;
+                          setState(() {
+                            widget.cookie.rating = rating.toString();
+                          });
+                          _dataRepository.updateMyCookies(widget.cookie);
                         },
                       ),
                     ),

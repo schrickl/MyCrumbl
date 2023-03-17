@@ -20,8 +20,6 @@ class CookieRow extends StatefulWidget {
 }
 
 class _CookieRowState extends State<CookieRow> {
-  bool get isFavorite => false;
-
   @override
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel>(context);
@@ -76,11 +74,13 @@ class _CookieRowState extends State<CookieRow> {
                   itemSize: MediaQuery.of(context).size.width / 16,
                   itemBuilder: (context, _) => const Icon(
                     Icons.cookie,
-                    color: CrumblColors.bright4,
+                    color: CrumblColors.bright3,
                   ),
                   onRatingUpdate: (rating) {
-                    widget.cookie.rating = rating.toString();
-                    _dataRepository.updateCookieModel(widget.cookie);
+                    setState(() {
+                      widget.cookie.rating = rating.toString();
+                    });
+                    _dataRepository.updateMyCookies(widget.cookie);
                   },
                 ),
               ],
@@ -90,9 +90,18 @@ class _CookieRowState extends State<CookieRow> {
           Expanded(
             child: FavoriteButton(
               isFavorite: widget.cookie.isFavorite,
-              valueChanged: (_) {
-                widget.cookie.isFavorite = !widget.cookie.isFavorite;
-                _dataRepository.updateCookieModel(widget.cookie);
+              valueChanged: (value) {
+                setState(() {
+                  widget.cookie.isFavorite = value;
+                });
+                if (widget.cookie.isFavorite) {
+                  _dataRepository.updateMyCookies(widget.cookie);
+                } else if (!widget.cookie.isFavorite &&
+                    double.parse(widget.cookie.rating) > 0) {
+                  _dataRepository.updateMyCookies(widget.cookie);
+                } else {
+                  _dataRepository.removeFromMyCookies(widget.cookie);
+                }
               },
             ),
           ),

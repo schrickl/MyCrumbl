@@ -41,7 +41,8 @@ class _CookiePageState extends State<CookiePage> {
           actions: <Widget>[
             IconButton(
               onPressed: () async {},
-              icon: const Icon(Icons.settings, color: CrumblColors.bright1),
+              icon: const Icon(Icons.info_outline_rounded,
+                  color: CrumblColors.bright1),
             ),
             IconButton(
               onPressed: () async {

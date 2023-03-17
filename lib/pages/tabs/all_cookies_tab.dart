@@ -43,7 +43,8 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
 
   @override
   Widget build(BuildContext context) {
-    final _currentUser = Provider.of<UserDataModel>(context);
+    final _currentUser = Provider.of<UserModel>(context);
+    print('currentUser.uid: ' + _currentUser.uid.toString());
 
     return StreamBuilder<List<CookieModel>>(
       stream: DataRepository(uid: _currentUser.uid).allCookies,

@@ -74,10 +74,9 @@ class AuthService {
     final user = await userRef.get();
 
     if (user.data() == null) {
-      final model = UserDataModel(
-        uid: uid,
+      const model = UserDataModel(
         defaultView: UserDataModel.defaultViewAll,
-        myCookies: const [],
+        myCookies: [],
       );
       try {
         await FirebaseFirestore.instance.collection('user_data').doc(uid).set(

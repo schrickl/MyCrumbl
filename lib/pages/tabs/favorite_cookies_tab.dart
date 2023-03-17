@@ -43,7 +43,7 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
 
   @override
   Widget build(BuildContext context) {
-    final _currentUser = Provider.of<UserDataModel>(context);
+    final _currentUser = Provider.of<UserModel>(context);
 
     return StreamBuilder<List<CookieModel>>(
       stream: DataRepository(uid: _currentUser.uid).favoriteCookies,

@@ -56,7 +56,7 @@ class DataRepository {
       stream1,
       stream2,
       stream3,
-      (firstList, secondList, thirdList) {
+          (firstList, secondList, thirdList) {
         // Combine the three lists into a single list
         final combinedList = [...firstList, ...secondList, ...thirdList];
 
@@ -75,14 +75,14 @@ class DataRepository {
   Future<List<CookieModel>> fetchCookies() async {
     // Fetch all cookies from Firebase
     final firebaseCookiesSnapshot =
-        await FirebaseFirestore.instance.collection('cookies').get();
+    await FirebaseFirestore.instance.collection('cookies').get();
     final firebaseCookies = firebaseCookiesSnapshot.docs
         .map((doc) => CookieModel.fromJson(doc.data()))
         .toList();
 
     // Fetch myCookies from UserDataModel in Firebase
     final userDataSnapshot =
-        await FirebaseFirestore.instance.collection('userData').doc(uid).get();
+    await FirebaseFirestore.instance.collection('userData').doc(uid).get();
     final userData = UserDataModel.fromJson(userDataSnapshot.data()!);
     final firebaseMyCookies = userData.myCookies ?? [];
 
@@ -93,7 +93,7 @@ class DataRepository {
     // Merge any common items
     final mergedCookies = uniqueCookies.map((cookie) {
       final firebaseCookie = firebaseCookies.firstWhere(
-        (c) => c.assetName == cookie.assetName,
+            (c) => c.assetName == cookie.assetName,
       );
       if (firebaseCookie != null) {
         return firebaseCookie.copyWith(
@@ -130,7 +130,7 @@ class DataRepository {
           final data = snapshot.data() as Map<String, dynamic>;
           final cookieData = data['myCookies'] as List<dynamic>;
           final cookieList =
-              cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
+          cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
           if (model.defaultView == UserDataModel.defaultViewFavorites) {
             return cookieList.where((element) => element.isFavorite).toList();
           } else if (model.defaultView == UserDataModel.defaultViewRated) {
@@ -170,7 +170,7 @@ class DataRepository {
         final data = snapshot.data() as Map<String, dynamic>;
         final cookieData = data['myCookies'] as List<dynamic>;
         final cookieList =
-            cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
+        cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
         if (model.defaultView == UserDataModel.defaultViewFavorites) {
           return cookieList.where((element) => element.isFavorite).toList();
         }
@@ -192,7 +192,7 @@ class DataRepository {
         final data = snapshot.data() as Map<String, dynamic>;
         final cookieData = data['myCookies'] as List<dynamic>;
         final cookieList =
-            cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
+        cookieData.map((cookie) => CookieModel.fromJson(cookie)).toList();
         if (model.defaultView == UserDataModel.defaultViewRated) {
           return cookieList
               .where((element) => double.parse(element.rating) > 0)
@@ -205,9 +205,74 @@ class DataRepository {
     });
   }
 
+  Future<void> removeFromMyCookies(CookieModel cookie) async {
+    final userDataDocumentRef =
+    FirebaseFirestore.instance.collection('user_data').doc(uid);
+
+    await userDataDocumentRef.get().then((userDataSnapshot) {
+      final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
+
+      final updatedCookies = myCookies
+          .where((c) => c['displayName'] != cookie.displayName)
+          .toList();
+
+      userDataDocumentRef.update({
+        'myCookies': updatedCookies,
+      }).then((value) {
+        print('Favorite removed successfully');
+      }).catchError((error) {
+        print('Error updating array: $error');
+      });
+    });
+  }
+
+  Future<void> addToMyCookies(CookieModel cookie) async {
+    final userDataDocumentRef =
+    FirebaseFirestore.instance.collection('user_data').doc(uid);
+
+    await userDataDocumentRef.get().then((userDataSnapshot) {
+      final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
+
+      myCookies.add(cookie.toJson());
+
+      userDataDocumentRef.update({
+        'myCookies': myCookies,
+      }).then((value) {
+        print('Favorite added successfully');
+      }).catchError((error) {
+        print('Error updating array: $error');
+      });
+    });
+  }
+
+  Future<void> updateMyCookies(CookieModel cookie) async {
+    final userDataDocumentRef =
+    FirebaseFirestore.instance.collection('user_data').doc(uid);
+
+    await userDataDocumentRef.get().then((userDataSnapshot) {
+      final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
+
+      // Remove the matching item from the array.
+      myCookies
+          .removeWhere((item) => item['displayName'] == cookie.displayName);
+
+      // Add the updated item to the array.
+      myCookies.add(cookie.toJson());
+
+      // Update the entire myCookies array in Firestore.
+      userDataDocumentRef.update({
+        'myCookies': myCookies,
+      }).then((value) {
+        print('Update successful');
+      }).catchError((error) {
+        print('Error updating array: $error');
+      });
+    });
+  }
+
   Future<void> updateCookieModel(CookieModel cookie) async {
     final userDataDocumentRef =
-        FirebaseFirestore.instance.collection('user_data').doc(uid);
+    FirebaseFirestore.instance.collection('user_data').doc(uid);
 
     // Remove the existing item from the array
     userDataDocumentRef.update({
