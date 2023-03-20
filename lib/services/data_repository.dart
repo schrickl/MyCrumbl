@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DataRepository {
   final String? uid;
@@ -61,7 +62,7 @@ class DataRepository {
   }
 
   Stream<List<CookieModel>> get favoriteCookies {
-    return FirebaseFirestore.instance
+    return _instance
         .collection('user_data')
         .doc(uid)
         .collection('my_cookies')
@@ -99,19 +100,19 @@ class DataRepository {
   // }
 
   Stream<List<CookieModel>> get ratedCookies {
-    return FirebaseFirestore.instance
+    return _instance
         .collection('user_data')
         .doc(uid)
         .collection('my_cookies')
-        .where('rating', isGreaterThan: double.parse('0'))
+        .where('rating', whereNotIn: ['0'])
         .snapshots()
         .map((querySnapshot) => querySnapshot.docs
             .map((doc) => CookieModel.fromJson(doc.data()))
             .toList())
         .handleError((error) {
-      print('Error fetching rated cookies: $error');
-      return <CookieModel>[];
-    });
+          print('Error fetching rated cookies: $error');
+          return <CookieModel>[];
+        });
   }
 
   // Stream<List<CookieModel>> get ratedCookies async* {
@@ -140,13 +141,12 @@ class DataRepository {
 
   Future<void> addOrUpdateCookie(CookieModel cookie) async {
     try {
-      final myCookiesRef = FirebaseFirestore.instance
-          .collection('user_data')
-          .doc(uid)
-          .collection('my_cookies');
+      final myCookiesRef =
+          _instance.collection('user_data').doc(uid).collection('my_cookies');
       final newCookieRef = myCookiesRef.doc(cookie.displayName);
       await newCookieRef.set(cookie.toJson(), SetOptions(merge: true));
       print('Added cookie: $cookie.displayName');
+      print('Cookie: ${cookie.toJson()}');
     } catch (e) {
       print('Error adding cookie: $e');
     }
@@ -168,8 +168,7 @@ class DataRepository {
   }
 
   Future<void> removeFromMyCookies(CookieModel cookie) async {
-    final userDataDocumentRef =
-        FirebaseFirestore.instance.collection('user_data').doc(uid);
+    final userDataDocumentRef = _instance.collection('user_data').doc(uid);
 
     await userDataDocumentRef.get().then((userDataSnapshot) {
       final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
@@ -189,8 +188,7 @@ class DataRepository {
   }
 
   Future<void> addToMyCookies(CookieModel cookie) async {
-    final userDataDocumentRef =
-        FirebaseFirestore.instance.collection('user_data').doc(uid);
+    final userDataDocumentRef = _instance.collection('user_data').doc(uid);
 
     await userDataDocumentRef.get().then((userDataSnapshot) {
       final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
@@ -208,8 +206,7 @@ class DataRepository {
   }
 
   Future<void> updateMyCookies(CookieModel cookie) async {
-    final userDataDocumentRef =
-        FirebaseFirestore.instance.collection('user_data').doc(uid);
+    final userDataDocumentRef = _instance.collection('user_data').doc(uid);
 
     await userDataDocumentRef.get().then((userDataSnapshot) {
       final List<dynamic> myCookies = userDataSnapshot.data()!['myCookies'];
@@ -233,8 +230,7 @@ class DataRepository {
   }
 
   Future<void> updateCookieModel(CookieModel cookie) async {
-    final userDataDocumentRef =
-        FirebaseFirestore.instance.collection('user_data').doc(uid);
+    final userDataDocumentRef = _instance.collection('user_data').doc(uid);
 
     // Remove the existing item from the array
     userDataDocumentRef.update({
@@ -251,5 +247,36 @@ class DataRepository {
     }).catchError((error) {
       print('Error removing item from array: $error');
     });
+  }
+
+  Stream<List<CookieModel>> mergedCookiesStream() {
+    final allCookiesStream = allCookies;
+    final favoriteCookiesStream = favoriteCookies;
+    final ratedCookiesStream = ratedCookies;
+
+    return Rx.combineLatest3<List<CookieModel>, List<CookieModel>,
+        List<CookieModel>, List<CookieModel>>(
+      allCookiesStream,
+      favoriteCookiesStream,
+      ratedCookiesStream,
+      (allCookies, favoriteCookies, ratedCookies) {
+        for (final CookieModel cookie in allCookies) {
+          if (favoriteCookies.contains(cookie)) {
+            cookie.isFavorite = true;
+          }
+          if (ratedCookies.contains(cookie)) {
+            print(ratedCookies
+                .firstWhere(
+                    (element) => element.displayName == cookie.displayName)
+                .rating);
+            cookie.rating = ratedCookies
+                .firstWhere(
+                    (element) => element.displayName == cookie.displayName)
+                .rating;
+          }
+        }
+        return allCookies;
+      },
+    );
   }
 }

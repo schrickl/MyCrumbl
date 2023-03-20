@@ -82,4 +82,14 @@ class CookieModel extends Equatable {
         'isFavorite: $isFavorite, '
         'lastSeen: $lastSeen}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CookieModel &&
+          runtimeType == other.runtimeType &&
+          displayName == other.displayName;
+
+  @override
+  int get hashCode => displayName.hashCode;
 }

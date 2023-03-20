@@ -47,7 +47,7 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
     print('currentUser.uid: ' + _currentUser.uid.toString());
 
     return StreamBuilder<List<CookieModel>>(
-      stream: DataRepository(uid: _currentUser.uid).allCookies,
+      stream: DataRepository(uid: _currentUser.uid).mergedCookiesStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
