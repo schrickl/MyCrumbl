@@ -17,7 +17,6 @@ class FavoriteCookiesTab extends StatefulWidget {
 
 class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
   TextEditingController controller = TextEditingController();
-  List<CookieModel> _filteredCookieList = [];
 
   @override
   dispose() {
@@ -25,20 +24,16 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
     super.dispose();
   }
 
-  List<CookieModel> _updateFilteredItems(
-      String value, List<CookieModel> items) {
-    if (value.isEmpty) {
-      _filteredCookieList = items;
-    } else {
-      _filteredCookieList = items
-          .where(
-            (item) => item.displayName.toLowerCase().contains(
-                  value.toLowerCase(),
-                ),
-          )
-          .toList();
+  List<CookieModel> _getFilteredCookies(List<CookieModel> cookies) {
+    final searchQuery = controller.text.toLowerCase();
+    if (searchQuery.isEmpty) {
+      return cookies;
     }
-    return _filteredCookieList;
+
+    return cookies
+        .where(
+            (cookie) => cookie.displayName.toLowerCase().contains(searchQuery))
+        .toList();
   }
 
   @override
@@ -50,42 +45,53 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
-            final cookieCount = snapshot.data!.length;
-            return Column(
-              children: [
-                MyCrumblTextFormField(
-                  controller: controller,
-                  hintText: 'Search for a cookie by name',
-                  obscureText: false,
-                  validator: null,
-                  prefixIcon: const Icon(Icons.search),
-                  keyboardType: TextInputType.text,
-                  onChanged: (value) {
-                    setState(() {
-                      _updateFilteredItems(value, snapshot.data!);
-                    });
-                  },
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(8.0),
-                    separatorBuilder: (context, index) => const Divider(
-                        color: CrumblColors.bright1, thickness: 2.0),
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    itemCount: _filteredCookieList.isNotEmpty
-                        ? _filteredCookieList.length
-                        : cookieCount,
-                    itemBuilder: (context, index) {
-                      return CookieRow(
-                          controller: controller,
-                          cookie: _filteredCookieList.isNotEmpty
-                              ? _filteredCookieList[index]
-                              : snapshot.data![index]);
+            final cookies = snapshot.data;
+            final filteredCookies = _getFilteredCookies(cookies!);
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  MyCrumblTextFormField(
+                    controller: controller,
+                    hintText: 'Search for a cookie by name',
+                    obscureText: false,
+                    validator: null,
+                    prefixIcon: const Icon(Icons.search),
+                    keyboardType: TextInputType.text,
+                    onChanged: (value) {
+                      setState(() {});
                     },
                   ),
-                ),
-              ],
+                  if (filteredCookies.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          'No cookies match the search criteria.',
+                          style: TextStyle(
+                              color: CrumblColors.bright1,
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  else
+                    ListView.separated(
+                      padding: const EdgeInsets.all(8.0),
+                      separatorBuilder: (context, index) => const Divider(
+                          color: CrumblColors.bright1, thickness: 2.0),
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: filteredCookies.length,
+                      itemBuilder: (context, index) {
+                        final cookie = filteredCookies[index];
+                        return CookieRow(
+                            controller: controller, cookie: cookie);
+                      },
+                    ),
+                ],
+              ),
             );
           } else {
             return Padding(
