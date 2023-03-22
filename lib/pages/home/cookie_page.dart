@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_list.dart';
+import 'package:my_crumbl/pages/info_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/shared/colors.dart';
@@ -40,7 +41,13 @@ class _CookiePageState extends State<CookiePage> {
           ),
           actions: <Widget>[
             IconButton(
-              onPressed: () async {},
+              onPressed: () async {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const InfoPage(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.info_outline_rounded,
                   color: CrumblColors.bright1),
             ),
