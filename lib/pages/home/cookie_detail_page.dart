@@ -121,6 +121,17 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                       ),
                     ),
                   ),
+                  if (widget.cookie.lastSeen != 'null')
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text(
+                        'Last seen at Crumbl the ${widget.cookie.lastSeen}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: CrumblColors.bright3,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             );

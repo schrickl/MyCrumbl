@@ -48,50 +48,54 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
             final cookies = snapshot.data;
             final filteredCookies = _getFilteredCookies(cookies!);
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  MyCrumblTextFormField(
-                    controller: controller,
-                    hintText: 'Search for a cookie by name',
-                    obscureText: false,
-                    validator: null,
-                    prefixIcon: const Icon(Icons.search),
-                    keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
-                  if (filteredCookies.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          'No cookies match the search criteria.',
-                          style: TextStyle(
-                              color: CrumblColors.bright1,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
+            return Column(
+              children: [
+                MyCrumblTextFormField(
+                  controller: controller,
+                  hintText: 'Search for a cookie by name',
+                  obscureText: false,
+                  validator: null,
+                  prefixIcon: const Icon(Icons.search),
+                  keyboardType: TextInputType.text,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                ),
+                if (filteredCookies.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        'No cookies match the search criteria.',
+                        style: TextStyle(
+                            color: CrumblColors.bright1,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
                       ),
-                    )
-                  else
-                    ListView.separated(
-                      padding: const EdgeInsets.all(8.0),
-                      separatorBuilder: (context, index) => const Divider(
-                          color: CrumblColors.bright1, thickness: 2.0),
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: filteredCookies.length,
-                      itemBuilder: (context, index) {
-                        final cookie = filteredCookies[index];
-                        return CookieRow(
-                            controller: controller, cookie: cookie);
-                      },
                     ),
-                ],
-              ),
+                  )
+                else
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(8.0),
+                        separatorBuilder: (context, index) => const Divider(
+                            color: CrumblColors.bright1, thickness: 2.0),
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        itemCount: filteredCookies.length,
+                        itemBuilder: (context, index) {
+                          final cookie = filteredCookies[index];
+                          if (cookie.isFavorite == true) {
+                            return CookieRow(
+                                controller: controller, cookie: cookie);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+              ],
             );
           } else {
             return Padding(
