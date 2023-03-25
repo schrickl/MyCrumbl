@@ -79,6 +79,7 @@ class _RatedCookiesTabState extends State<RatedCookiesTab> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: ListView.separated(
+                        key: Key(cookies.length.toString()),
                         padding: const EdgeInsets.all(8.0),
                         separatorBuilder: (context, index) => const Divider(
                             color: CrumblColors.bright1, thickness: 2.0),

@@ -79,8 +79,8 @@ class _CookieRowState extends State<CookieRow> {
                   onRatingUpdate: (rating) {
                     setState(() {
                       widget.cookie.rating = rating.toString();
+                      _dataRepository.addOrUpdateCookie(widget.cookie);
                     });
-                    _dataRepository.addOrUpdateCookie(widget.cookie);
                   },
                 ),
               ],
@@ -93,15 +93,16 @@ class _CookieRowState extends State<CookieRow> {
               valueChanged: (value) {
                 setState(() {
                   widget.cookie.isFavorite = value;
+
+                  if (widget.cookie.isFavorite) {
+                    _dataRepository.addOrUpdateCookie(widget.cookie);
+                  } else if (!widget.cookie.isFavorite &&
+                      double.parse(widget.cookie.rating) > 0) {
+                    _dataRepository.addOrUpdateCookie(widget.cookie);
+                  } else {
+                    _dataRepository.deleteCookie(widget.cookie);
+                  }
                 });
-                if (widget.cookie.isFavorite) {
-                  _dataRepository.addOrUpdateCookie(widget.cookie);
-                } else if (!widget.cookie.isFavorite &&
-                    double.parse(widget.cookie.rating) > 0) {
-                  _dataRepository.addOrUpdateCookie(widget.cookie);
-                } else {
-                  _dataRepository.deleteCookie(widget.cookie);
-                }
               },
             ),
           ),
