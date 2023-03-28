@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
@@ -27,7 +26,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
   Widget build(BuildContext context) {
     final UserModel? currentUser = Provider.of<UserModel>(context);
     final DataRepository _dataRepository =
-    DataRepository(uid: currentUser!.uid);
+        DataRepository(uid: currentUser!.uid);
 
     return Scaffold(
       backgroundColor: CrumblColors.secondary,
@@ -52,15 +51,12 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                       tag: 'cookie-${widget.cookie.displayName}',
                       child: CachedNetworkImage(
                         imageUrl: _downloadUrl,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.5,
                         fit: BoxFit.cover,
                         alignment: Alignment.topCenter,
                         placeholder: (context, url) => const LoadingPage(),
                         errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -82,27 +78,32 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                             fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    trailing: FavoriteButton(
-                      isFavorite: widget.cookie.isFavorite,
-                      valueChanged: (value) {
-                        setState(() {
-                          widget.cookie.isFavorite = value;
-
-                          if (widget.cookie.isFavorite) {
-                            _dataRepository.addOrUpdateCookie(widget.cookie);
-                          } else if (!widget.cookie.isFavorite &&
-                              double.parse(widget.cookie.rating) > 0) {
-                            _dataRepository.addOrUpdateCookie(widget.cookie);
-                          } else {
-                            _dataRepository.deleteCookie(widget.cookie);
-                          }
-                        });
-                      },
+                    trailing: IconButton(
+                      icon: widget.cookie.isFavorite
+                          ? Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                              size: MediaQuery.of(context).size.width / 8,
+                            )
+                          : const Icon(Icons.favorite_border,
+                              color: Colors.red, size: 35.0),
+                      onPressed: () => setState(() {
+                        widget.cookie.isFavorite = !widget.cookie.isFavorite;
+                        if (widget.cookie.isFavorite) {
+                          _dataRepository.addOrUpdateCookie(widget.cookie);
+                        } else if (!widget.cookie.isFavorite &&
+                            double.parse(widget.cookie.rating) > 0) {
+                          _dataRepository.addOrUpdateCookie(widget.cookie);
+                        } else {
+                          _dataRepository.deleteCookie(widget.cookie);
+                        }
+                      }),
                     ),
                   ),
+                  const SizedBox(height: 10.0),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(18),
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
                       child: RatingBar.builder(
                         initialRating: double.parse(widget.cookie.rating),
                         minRating: 1,
@@ -110,13 +111,9 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                         allowHalfRating: true,
                         itemCount: 5,
                         itemPadding:
-                        const EdgeInsets.symmetric(horizontal: 4.0),
-                        itemSize: MediaQuery
-                            .of(context)
-                            .size
-                            .width / 8,
-                        itemBuilder: (context, _) =>
-                        const Icon(
+                            const EdgeInsets.symmetric(horizontal: 4.0),
+                        itemSize: MediaQuery.of(context).size.width / 8,
+                        itemBuilder: (context, _) => const Icon(
                           Icons.cookie,
                           color: CrumblColors.bright4,
                         ),
@@ -129,17 +126,30 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                       ),
                     ),
                   ),
-                  if (widget.cookie.lastSeen != 'null')
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
+                  if (widget.cookie.isCurrent)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.0),
                       child: Text(
-                        'Last seen at Crumbl the ${widget.cookie.lastSeen}',
-                        style: const TextStyle(
+                        'Currently available at your local Crumbl!',
+                        style: TextStyle(
                           fontSize: 20,
                           color: CrumblColors.bright3,
                         ),
                       ),
-                    ),
+                    )
+                  else
+                    widget.cookie.lastSeen != 'null'
+                        ? Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Text(
+                              'Last seen at Crumbl the ${widget.cookie.lastSeen}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: CrumblColors.bright3,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                 ],
               ),
             );

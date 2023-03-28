@@ -38,7 +38,7 @@ class DataRepository {
 
   Stream<List<CookieModel>> get allCookies {
     final cookies = _instance.collection('cookies');
-    return cookies.limit(15).snapshots().map((snapshot) {
+    return cookies.limit(12).snapshots().map((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         return snapshot.docs
             .map((doc) => CookieModel.fromJson(doc.data()))
@@ -133,5 +133,18 @@ class DataRepository {
         return allCookies;
       },
     );
+  }
+
+  Future<void> syncMyCookiesWithAllCookies() async {
+    final allCookies = await _instance.collection('cookies').get();
+    final myCookiesRef =
+        _instance.collection('user_data').doc(uid).collection('my_cookies');
+    for (final cookie in allCookies.docs) {
+      final newCookieRef = myCookiesRef.doc(cookie.id);
+      await newCookieRef.update({
+        'isCurrent': cookie.get('isCurrent'),
+        'lastSeen': cookie.get('lastSeen'),
+      });
+    }
   }
 }

@@ -16,16 +16,17 @@ class AllCookiesTab extends StatefulWidget {
 }
 
 class _AllCookiesTabState extends State<AllCookiesTab> {
-  TextEditingController controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
+  List<CookieModel> _filteredCookies = [];
 
   @override
   dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   List<CookieModel> _getFilteredCookies(List<CookieModel> cookies) {
-    final searchQuery = controller.text.toLowerCase();
+    final searchQuery = _controller.text.toLowerCase();
     if (searchQuery.isEmpty) {
       return cookies;
     }
@@ -39,6 +40,7 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
   @override
   Widget build(BuildContext context) {
     final _currentUser = Provider.of<UserModel>(context);
+    final _dataRepository = DataRepository(uid: _currentUser.uid);
 
     return StreamBuilder<List<CookieModel>>(
       stream: DataRepository(uid: _currentUser.uid).mergedCookiesStream(),
@@ -46,22 +48,30 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
             final cookies = snapshot.data;
-            final filteredCookies = _getFilteredCookies(cookies!);
+            _filteredCookies = _getFilteredCookies(cookies!);
+            _dataRepository.syncMyCookiesWithAllCookies();
 
             return Column(
               children: [
                 MyCrumblTextFormField(
-                  controller: controller,
+                  controller: _controller,
                   hintText: 'Search for a cookie by name',
                   obscureText: false,
                   validator: null,
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _controller.clear();
+                      setState(() {});
+                    },
+                  ),
                   keyboardType: TextInputType.text,
                   onChanged: (value) {
                     setState(() {});
                   },
                 ),
-                if (filteredCookies.isEmpty)
+                if (_filteredCookies.isEmpty)
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Center(
@@ -79,17 +89,16 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: ListView.separated(
-                        key: Key(cookies.length.toString()),
+                        key: Key(cookies[0].displayName),
                         padding: const EdgeInsets.all(8.0),
                         separatorBuilder: (context, index) => const Divider(
                             color: CrumblColors.bright1, thickness: 2.0),
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: filteredCookies.length,
+                        itemCount: _filteredCookies.length,
                         itemBuilder: (context, index) {
-                          final cookie = filteredCookies[index];
-                          return CookieRow(
-                              controller: controller, cookie: cookie);
+                          final cookie = _filteredCookies[index];
+                          return CookieRow(cookie: cookie);
                         },
                       ),
                     ),

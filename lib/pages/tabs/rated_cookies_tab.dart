@@ -56,6 +56,13 @@ class _RatedCookiesTabState extends State<RatedCookiesTab> {
                   obscureText: false,
                   validator: null,
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      controller.clear();
+                      setState(() {});
+                    },
+                  ),
                   keyboardType: TextInputType.text,
                   onChanged: (value) {
                     setState(() {});
@@ -88,8 +95,7 @@ class _RatedCookiesTabState extends State<RatedCookiesTab> {
                         itemCount: filteredCookies.length,
                         itemBuilder: (context, index) {
                           final cookie = filteredCookies[index];
-                          return CookieRow(
-                              controller: controller, cookie: cookie);
+                          return CookieRow(cookie: cookie);
                         },
                       ),
                     ),

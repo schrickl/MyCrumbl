@@ -56,6 +56,13 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
                   obscureText: false,
                   validator: null,
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      controller.clear();
+                      setState(() {});
+                    },
+                  ),
                   keyboardType: TextInputType.text,
                   onChanged: (value) {
                     setState(() {});
@@ -89,8 +96,7 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
                         itemBuilder: (context, index) {
                           final cookie = filteredCookies[index];
                           if (cookie.isFavorite == true) {
-                            return CookieRow(
-                                controller: controller, cookie: cookie);
+                            return CookieRow(cookie: cookie);
                           }
                         },
                       ),

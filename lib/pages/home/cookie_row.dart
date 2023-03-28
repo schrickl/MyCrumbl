@@ -1,4 +1,3 @@
-import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
@@ -9,11 +8,9 @@ import 'package:my_crumbl/shared/colors.dart';
 import 'package:provider/provider.dart';
 
 class CookieRow extends StatefulWidget {
-  final TextEditingController controller;
   CookieModel cookie;
 
-  CookieRow({Key? key, required this.controller, required this.cookie})
-      : super(key: key);
+  CookieRow({Key? key, required this.cookie}) : super(key: key);
 
   @override
   State<CookieRow> createState() => _CookieRowState();
@@ -28,12 +25,13 @@ class _CookieRowState extends State<CookieRow> {
 
     return GestureDetector(
       onTap: () {
-        widget.controller.clear();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => CookieDetailPage(cookie: widget.cookie),
-          ),
-        );
+        Navigator.of(context)
+            .push(
+              MaterialPageRoute(
+                builder: (context) => CookieDetailPage(cookie: widget.cookie),
+              ),
+            )
+            .then((value) => setState(() {}));
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -88,22 +86,25 @@ class _CookieRowState extends State<CookieRow> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: FavoriteButton(
-              isFavorite: widget.cookie.isFavorite,
-              valueChanged: (value) {
-                setState(() {
-                  widget.cookie.isFavorite = value;
-
-                  if (widget.cookie.isFavorite) {
-                    _dataRepository.addOrUpdateCookie(widget.cookie);
-                  } else if (!widget.cookie.isFavorite &&
-                      double.parse(widget.cookie.rating) > 0) {
-                    _dataRepository.addOrUpdateCookie(widget.cookie);
-                  } else {
-                    _dataRepository.deleteCookie(widget.cookie);
-                  }
-                });
-              },
+            child: IconButton(
+              icon: widget.cookie.isFavorite
+                  ? Icon(Icons.favorite,
+                      color: Colors.red,
+                      size: MediaQuery.of(context).size.width / 12.0)
+                  : Icon(Icons.favorite_border,
+                      color: Colors.red,
+                      size: MediaQuery.of(context).size.width / 12.0),
+              onPressed: () => setState(() {
+                widget.cookie.isFavorite = !widget.cookie.isFavorite;
+                if (widget.cookie.isFavorite) {
+                  _dataRepository.addOrUpdateCookie(widget.cookie);
+                } else if (!widget.cookie.isFavorite &&
+                    double.parse(widget.cookie.rating) > 0) {
+                  _dataRepository.addOrUpdateCookie(widget.cookie);
+                } else {
+                  _dataRepository.deleteCookie(widget.cookie);
+                }
+              }),
             ),
           ),
         ],
