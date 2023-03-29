@@ -32,9 +32,9 @@ class _InfoPageState extends State<InfoPage> {
         backgroundColor: CrumblColors.accentColor,
         centerTitle: true,
         elevation: 0.0,
-        title: Text(
-          'Version Number: ${packageInfo?.version}',
-          style: const TextStyle(
+        title: const Text(
+          'MyCrumbl Info',
+          style: TextStyle(
               color: CrumblColors.bright1,
               fontWeight: FontWeight.bold,
               fontSize: 30),
@@ -100,6 +100,22 @@ class _InfoPageState extends State<InfoPage> {
             onTap: () async {
               await launch(Uri.parse('https://saltandbaker.com/'));
             },
+          ),
+          const SizedBox(height: 20),
+          const Divider(
+            color: CrumblColors.bright1,
+            thickness: 2,
+            indent: 20,
+            endIndent: 20,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Version Number: ${packageInfo?.version}',
+            style: TextStyle(
+              color: CrumblColors.bright1,
+              fontWeight: FontWeight.bold,
+              fontSize: MediaQuery.of(context).size.width / 16,
+            ),
           ),
         ],
       ),
