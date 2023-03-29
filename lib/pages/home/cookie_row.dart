@@ -64,7 +64,7 @@ class _CookieRowState extends State<CookieRow> {
                 const SizedBox(height: 5),
                 RatingBar.builder(
                   initialRating: double.parse(widget.cookie.rating),
-                  minRating: 1,
+                  minRating: 0.5,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
                   itemCount: 5,

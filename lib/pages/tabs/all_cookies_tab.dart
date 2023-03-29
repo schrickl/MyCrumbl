@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
@@ -18,6 +20,33 @@ class AllCookiesTab extends StatefulWidget {
 class _AllCookiesTabState extends State<AllCookiesTab> {
   final TextEditingController _controller = TextEditingController();
   List<CookieModel> _filteredCookies = [];
+  final firestore = FirebaseFirestore.instance;
+  final collectionRef = FirebaseFirestore.instance.collection('cookies');
+
+  @override
+  initState() {
+    super.initState();
+
+    // Create a query that gets all dog documents
+    final query = collectionRef.orderBy(FieldPath.documentId);
+    final _dataRepository =
+        DataRepository(uid: FirebaseAuth.instance.currentUser!.uid);
+
+    // Set up a real-time listener for the query snapshot
+    query.snapshots().listen((querySnapshot) {
+      for (final docChange in querySnapshot.docChanges) {
+        final docSnapshot = docChange.doc;
+        final docId = docSnapshot.id;
+
+        if (docChange.type == DocumentChangeType.modified) {
+          if (docSnapshot.data()!.containsKey('isCurrent') ||
+              docSnapshot.data()!.containsKey('lastSeen')) {
+            _dataRepository.syncMyCookiesWithAllCookies(docId);
+          }
+        }
+      }
+    });
+  }
 
   @override
   dispose() {
@@ -40,7 +69,6 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
   @override
   Widget build(BuildContext context) {
     final _currentUser = Provider.of<UserModel>(context);
-    final _dataRepository = DataRepository(uid: _currentUser.uid);
 
     return StreamBuilder<List<CookieModel>>(
       stream: DataRepository(uid: _currentUser.uid).mergedCookiesStream(),
@@ -49,7 +77,8 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
           if (snapshot.data!.isNotEmpty) {
             final cookies = snapshot.data;
             _filteredCookies = _getFilteredCookies(cookies!);
-            _dataRepository.syncMyCookiesWithAllCookies();
+
+            //_dataRepository.syncMyCookiesWithAllCookies();
 
             return Column(
               children: [
@@ -89,7 +118,7 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: ListView.separated(
-                        key: Key(cookies[0].displayName),
+                        key: Key(cookies.length.toString()),
                         padding: const EdgeInsets.all(8.0),
                         separatorBuilder: (context, index) => const Divider(
                             color: CrumblColors.bright1, thickness: 2.0),

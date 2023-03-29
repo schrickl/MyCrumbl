@@ -126,6 +126,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10.0),
                   if (widget.cookie.isCurrent)
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.0),

@@ -38,7 +38,7 @@ class DataRepository {
 
   Stream<List<CookieModel>> get allCookies {
     final cookies = _instance.collection('cookies');
-    return cookies.limit(12).snapshots().map((snapshot) {
+    return cookies.snapshots().map((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         return snapshot.docs
             .map((doc) => CookieModel.fromJson(doc.data()))
@@ -78,6 +78,10 @@ class DataRepository {
         .handleError((error) {
           print('Error fetching rated cookies: $error');
           return <CookieModel>[];
+        })
+        .map((cookieList) {
+          cookieList.sort((a, b) => a.displayName.compareTo(b.displayName));
+          return cookieList;
         });
   }
 
@@ -87,7 +91,7 @@ class DataRepository {
           _instance.collection('user_data').doc(uid).collection('my_cookies');
       final newCookieRef = myCookiesRef.doc(cookie.displayName);
       await newCookieRef.set(cookie.toJson(), SetOptions(merge: true));
-      print('Added cookie: $cookie.displayName');
+      print('Added or Updated cookie: $cookie.displayName');
     } catch (e) {
       print('Error adding cookie: $e');
     }
@@ -135,16 +139,23 @@ class DataRepository {
     );
   }
 
-  Future<void> syncMyCookiesWithAllCookies() async {
-    final allCookies = await _instance.collection('cookies').get();
-    final myCookiesRef =
-        _instance.collection('user_data').doc(uid).collection('my_cookies');
-    for (final cookie in allCookies.docs) {
-      final newCookieRef = myCookiesRef.doc(cookie.id);
-      await newCookieRef.update({
-        'isCurrent': cookie.get('isCurrent'),
-        'lastSeen': cookie.get('lastSeen'),
+  Future<void> syncMyCookiesWithAllCookies(String displayName) async {
+    final theCookie =
+        await _instance.collection('cookies').doc(displayName).get();
+    final myCookiesRef = _instance
+        .collection('user_data')
+        .doc(uid)
+        .collection('my_cookies')
+        .doc(displayName);
+
+    try {
+      await myCookiesRef.update({
+        'isCurrent': theCookie.get('isCurrent'),
+        'lastSeen': theCookie.get('lastSeen'),
       });
+      print('Synced cookie: $displayName');
+    } catch (e) {
+      print('Error syncing cookie: $e');
     }
   }
 }

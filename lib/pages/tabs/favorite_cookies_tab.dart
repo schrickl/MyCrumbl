@@ -95,9 +95,7 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
                         itemCount: filteredCookies.length,
                         itemBuilder: (context, index) {
                           final cookie = filteredCookies[index];
-                          if (cookie.isFavorite == true) {
-                            return CookieRow(cookie: cookie);
-                          }
+                          return CookieRow(cookie: cookie);
                         },
                       ),
                     ),
