@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/shared/colors.dart';
 
 class MyCrumblTextFormField extends StatelessWidget {
   final TextEditingController? controller;
@@ -39,16 +38,16 @@ class MyCrumblTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         errorMaxLines: errorMaxLines,
         hintText: hintText,
-        hintStyle: const TextStyle(color: CrumblColors.primary),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
         prefixIcon: prefixIcon,
-        prefixIconColor: CrumblColors.primary,
+        prefixIconColor: Theme.of(context).colorScheme.primary,
         suffixIcon: suffixIcon,
-        suffixIconColor: CrumblColors.primary,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: CrumblColors.primary),
+        suffixIconColor: Theme.of(context).colorScheme.primary,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: CrumblColors.secondary),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
         filled: true,
         fillColor: Colors.white54,

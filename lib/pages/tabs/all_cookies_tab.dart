@@ -5,7 +5,6 @@ import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_row.dart';
 import 'package:my_crumbl/services/data_repository.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:my_crumbl/shared/my_crumbl_text_form_field.dart';
 import 'package:provider/provider.dart';
@@ -78,8 +77,6 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
             final cookies = snapshot.data;
             _filteredCookies = _getFilteredCookies(cookies!);
 
-            //_dataRepository.syncMyCookiesWithAllCookies();
-
             return Column(
               children: [
                 MyCrumblTextFormField(
@@ -101,13 +98,13 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
                   },
                 ),
                 if (_filteredCookies.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text(
                         'No cookies match the search criteria.',
                         style: TextStyle(
-                            color: CrumblColors.bright1,
+                            color: Theme.of(context).colorScheme.tertiary,
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
@@ -120,8 +117,9 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
                       child: ListView.separated(
                         key: Key(cookies.length.toString()),
                         padding: const EdgeInsets.all(8.0),
-                        separatorBuilder: (context, index) => const Divider(
-                            color: CrumblColors.bright1, thickness: 2.0),
+                        separatorBuilder: (context, index) => Divider(
+                            color: Theme.of(context).colorScheme.secondary,
+                            thickness: 2.0),
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         itemCount: _filteredCookies.length,
@@ -139,10 +137,10 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
+                  Text(
                       'Oops! Nothing to see here. Try rating or favoriting some cookies!',
                       style: TextStyle(
-                          color: CrumblColors.bright1,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center),

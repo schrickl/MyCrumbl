@@ -4,7 +4,6 @@ import 'package:my_crumbl/pages/tabs/all_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/favorite_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/rated_cookies_tab.dart';
 import 'package:my_crumbl/services/data_repository.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:provider/provider.dart';
 
 class CookieList extends StatefulWidget {
@@ -71,7 +70,7 @@ class _CookieListState extends State<CookieList>
           children: [
             TabBar(
               controller: _tabController,
-              labelColor: CrumblColors.bright1,
+              labelColor: Theme.of(context).colorScheme.primary,
               tabs: tabs,
               onTap: (index) async {
                 switch (index) {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_crumbl/pages/authenticate/reset_password_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/shared/auth_exception_handler.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:my_crumbl/shared/my_crumbl_text_form_field.dart';
 
@@ -43,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     return _isLoading
         ? const LoadingPage()
         : Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: Theme.of(context).colorScheme.background,
             body: SafeArea(
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -87,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                               _isPasswordHidden
                                   ? Icons.visibility_off
                                   : Icons.visibility,
-                              color: CrumblColors.primary,
                             ),
                             onPressed: togglePasswordVisibility,
                           ),
@@ -107,10 +105,10 @@ class _LoginPageState extends State<LoginPage> {
                                       const ResetPasswordPage(),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Forgot Password?',
                                 style: TextStyle(
-                                  color: CrumblColors.primary,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -122,8 +120,11 @@ class _LoginPageState extends State<LoginPage> {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: CrumblColors.primary,
+                              foregroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .onInverseSurface,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
                             ),
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
@@ -154,17 +155,18 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               'Not a member?',
-                              style: TextStyle(color: CrumblColors.primary),
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary),
                             ),
                             const SizedBox(width: 4.0),
                             GestureDetector(
                               onTap: widget.onTap,
-                              child: const Text(
+                              child: Text(
                                 'Register now',
                                 style: TextStyle(
-                                  color: CrumblColors.primary,
+                                  color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -181,11 +183,12 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'This app is not affiliated with Crumbl™ Cookies',
                     textAlign: TextAlign.end,
-                    style: TextStyle(color: CrumblColors.primary),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
                 ],
               ),
@@ -210,10 +213,11 @@ class _LoginPageState extends State<LoginPage> {
                 _emailController.clear();
                 _passwordController.clear();
               },
-              child: const Text(
+              child: Text(
                 'OK',
                 style: TextStyle(
-                    color: CrumblColors.primary, fontWeight: FontWeight.bold),
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ],

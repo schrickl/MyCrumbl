@@ -4,7 +4,6 @@ import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_detail_page.dart';
 import 'package:my_crumbl/services/data_repository.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:provider/provider.dart';
 
 class CookieRow extends StatefulWidget {
@@ -70,9 +69,9 @@ class _CookieRowState extends State<CookieRow> {
                   itemCount: 5,
                   itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                   itemSize: MediaQuery.of(context).size.width / 16,
-                  itemBuilder: (context, _) => const Icon(
+                  itemBuilder: (context, _) => Icon(
                     Icons.cookie,
-                    color: CrumblColors.bright3,
+                    color: Theme.of(context).colorScheme.inversePrimary,
                   ),
                   onRatingUpdate: (rating) {
                     setState(() {

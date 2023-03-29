@@ -5,6 +5,7 @@ import 'package:my_crumbl/firebase_options.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/authenticate/auth_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
+import 'package:my_crumbl/shared/color_schemes.g.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -26,14 +27,15 @@ class MyCrumbl extends StatelessWidget {
       initialData: null,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: _buildTheme(Brightness.light),
+        theme: _appTheme(Brightness.light),
         home: const AuthPage(),
       ),
     );
   }
 
-  ThemeData _buildTheme(brightness) {
-    final baseTheme = ThemeData(brightness: brightness);
+  ThemeData _appTheme(brightness) {
+    final baseTheme =
+        ThemeData(useMaterial3: true, colorScheme: lightColorScheme);
 
     return baseTheme.copyWith(
       textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),

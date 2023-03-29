@@ -4,7 +4,6 @@ import 'package:my_crumbl/pages/home/cookie_list.dart';
 import 'package:my_crumbl/pages/info_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/services/data_repository.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:provider/provider.dart';
 
@@ -27,15 +26,15 @@ class _CookiePageState extends State<CookiePage> {
       initialData: null,
       catchError: (_, __) => UserDataModel.defaultUser,
       child: Scaffold(
-        backgroundColor: CrumblColors.secondary,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          backgroundColor: CrumblColors.accentColor,
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
           centerTitle: true,
           elevation: 0.0,
-          title: const Text(
+          title: Text(
             'MyCrumbl',
             style: TextStyle(
-                color: CrumblColors.bright1,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 30),
           ),
@@ -48,14 +47,15 @@ class _CookiePageState extends State<CookiePage> {
                   ),
                 );
               },
-              icon: const Icon(Icons.info_outline_rounded,
-                  color: CrumblColors.bright1),
+              icon: Icon(Icons.info_outline_rounded,
+                  color: Theme.of(context).colorScheme.primary),
             ),
             IconButton(
               onPressed: () async {
                 await _auth.signOut();
               },
-              icon: const Icon(Icons.logout, color: CrumblColors.bright1),
+              icon: Icon(Icons.logout,
+                  color: Theme.of(context).colorScheme.primary),
             ),
           ],
         ),

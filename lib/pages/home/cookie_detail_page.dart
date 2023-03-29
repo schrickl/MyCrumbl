@@ -5,7 +5,6 @@ import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/services/storage_service.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:provider/provider.dart';
 
@@ -29,10 +28,10 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
         DataRepository(uid: currentUser!.uid);
 
     return Scaffold(
-      backgroundColor: CrumblColors.secondary,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: Text(widget.cookie.displayName),
-        backgroundColor: CrumblColors.primary,
+        backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
       ),
       extendBodyBehindAppBar: false,
@@ -64,10 +63,10 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                   ListTile(
                     title: Text(
                       widget.cookie.displayName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
-                        color: CrumblColors.bright3,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                     ),
                     subtitle: Padding(
@@ -113,9 +112,9 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                         itemPadding:
                             const EdgeInsets.symmetric(horizontal: 4.0),
                         itemSize: MediaQuery.of(context).size.width / 8,
-                        itemBuilder: (context, _) => const Icon(
+                        itemBuilder: (context, _) => Icon(
                           Icons.cookie,
-                          color: CrumblColors.bright4,
+                          color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                         onRatingUpdate: (rating) {
                           setState(() {
@@ -128,13 +127,13 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                   ),
                   const SizedBox(height: 10.0),
                   if (widget.cookie.isCurrent)
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.0),
                       child: Text(
                         'Currently available at your local Crumbl!',
                         style: TextStyle(
                           fontSize: 20,
-                          color: CrumblColors.bright3,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                     )
@@ -144,9 +143,9 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                             padding: const EdgeInsets.all(18.0),
                             child: Text(
                               'Last seen at Crumbl the ${widget.cookie.lastSeen}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
-                                color: CrumblColors.bright3,
+                                color: Theme.of(context).colorScheme.tertiary,
                               ),
                             ),
                           )

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/shared/colors.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,14 +27,15 @@ class _InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        backgroundColor: CrumblColors.accentColor,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         centerTitle: true,
         elevation: 0.0,
-        title: const Text(
+        title: Text(
           'MyCrumbl Info',
           style: TextStyle(
-              color: CrumblColors.bright1,
+              color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.bold,
               fontSize: 30),
         ),
@@ -102,8 +102,8 @@ class _InfoPageState extends State<InfoPage> {
             },
           ),
           const SizedBox(height: 20),
-          const Divider(
-            color: CrumblColors.bright1,
+          Divider(
+            color: Theme.of(context).colorScheme.secondary,
             thickness: 2,
             indent: 20,
             endIndent: 20,
@@ -112,7 +112,7 @@ class _InfoPageState extends State<InfoPage> {
           Text(
             'Version Number: ${packageInfo?.version}',
             style: TextStyle(
-              color: CrumblColors.bright1,
+              color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.bold,
               fontSize: MediaQuery.of(context).size.width / 16,
             ),
