@@ -121,7 +121,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'This app is not affiliated with Crumbl™ Cookies',
+              'This app is not affiliated with Crumbl® Cookies',
               textAlign: TextAlign.end,
               style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
