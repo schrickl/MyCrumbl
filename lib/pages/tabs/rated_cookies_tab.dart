@@ -69,12 +69,12 @@ class _RatedCookiesTabState extends State<RatedCookiesTab> {
                 ),
                 if (filteredCookies.isEmpty)
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Center(
                       child: Text(
                         'No cookies match the search criteria.',
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.inversePrimary,
+                            color: Theme.of(context).colorScheme.primary,
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,

@@ -5,7 +5,7 @@ import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_row.dart';
 import 'package:my_crumbl/services/data_repository.dart';
-import 'package:my_crumbl/shared/loading_page.dart';
+import 'package:my_crumbl/services/hive_service.dart';
 import 'package:my_crumbl/shared/my_crumbl_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +26,12 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
   initState() {
     super.initState();
 
+    // final cookies = HiveService.getItems();
+    // if (cookies.isNotEmpty) {
+    //   setState(() {
+    //     _filteredCookies = cookies;
+    //   });
+    // }
     // Create a query that gets all dog documents
     final query = collectionRef.orderBy(FieldPath.documentId);
     final _dataRepository =
@@ -53,7 +59,9 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
     super.dispose();
   }
 
-  List<CookieModel> _getFilteredCookies(List<CookieModel> cookies) {
+  List<CookieModel> _getFilteredCookies() {
+    final cookies = HiveService.getItems();
+
     final searchQuery = _controller.text.toLowerCase();
     if (searchQuery.isEmpty) {
       return cookies;
@@ -68,96 +76,64 @@ class _AllCookiesTabState extends State<AllCookiesTab> {
   @override
   Widget build(BuildContext context) {
     final _currentUser = Provider.of<UserModel>(context);
+    // final cookies = HiveService.getItems();
 
-    return StreamBuilder<List<CookieModel>>(
-      stream: DataRepository(uid: _currentUser.uid).mergedCookiesStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data!.isNotEmpty) {
-            final cookies = snapshot.data;
-            _filteredCookies = _getFilteredCookies(cookies!);
+    _filteredCookies = _getFilteredCookies();
 
-            return Column(
-              children: [
-                MyCrumblTextFormField(
-                  controller: _controller,
-                  hintText: 'Search for a cookie by name',
-                  obscureText: false,
-                  validator: null,
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _controller.clear();
-                      setState(() {});
-                    },
-                  ),
-                  keyboardType: TextInputType.text,
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
-                if (_filteredCookies.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        'No cookies match the search criteria.',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: ListView.separated(
-                        key: Key(cookies.length.toString()),
-                        padding: const EdgeInsets.all(8.0),
-                        separatorBuilder: (context, index) => Divider(
-                            color: Theme.of(context).colorScheme.secondary,
-                            thickness: 2.0),
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: _filteredCookies.length,
-                        itemBuilder: (context, index) {
-                          final cookie = _filteredCookies[index];
-                          return CookieRow(cookie: cookie);
-                        },
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          } else {
-            return Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                      'Oops! Nothing to see here. Try rating or favoriting some cookies!',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center),
-                  Image.asset(
-                    'assets/images/no-cookies.png',
-                    fit: BoxFit.contain,
-                  ),
-                ],
+    return Column(
+      children: [
+        MyCrumblTextFormField(
+          controller: _controller,
+          hintText: 'Search for a cookie by name',
+          obscureText: false,
+          validator: null,
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+              _controller.clear();
+              setState(() {});
+            },
+          ),
+          keyboardType: TextInputType.text,
+          onChanged: (value) {
+            setState(() {});
+          },
+        ),
+        if (_filteredCookies.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                'No cookies match the search criteria.',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
-            );
-          }
-        } else if (snapshot.hasError) {
-          return const Text('Error');
-        } else {
-          return const Center(child: LoadingPage());
-        }
-      },
+            ),
+          )
+        else
+          Expanded(
+            child: SingleChildScrollView(
+              child: ListView.separated(
+                //key: Key(cookies.length.toString()),
+                padding: const EdgeInsets.all(8.0),
+                separatorBuilder: (context, index) => Divider(
+                    color: Theme.of(context).colorScheme.secondary,
+                    thickness: 2.0),
+                shrinkWrap: true,
+                physics: const ClampingScrollPhysics(),
+                itemCount: _filteredCookies.length,
+                itemBuilder: (context, index) {
+                  final cookie = _filteredCookies[index];
+                  return CookieRow(cookie: cookie);
+                },
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

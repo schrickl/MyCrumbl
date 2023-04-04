@@ -1,18 +1,29 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'cookie_model.g.dart';
 
+@HiveType(typeId: 0)
 @JsonSerializable()
 class CookieModel extends Equatable {
+  @HiveField(0)
   final String assetName;
+  @HiveField(1)
   final String assetPath;
+  @HiveField(2)
   final String description;
+  @HiveField(3)
   final String displayName;
+  @HiveField(4)
   final String storageLocation;
+  @HiveField(5)
   String rating;
+  @HiveField(6)
   final bool isCurrent;
+  @HiveField(7)
   bool isFavorite;
+  @HiveField(8)
   final String lastSeen;
 
   CookieModel({

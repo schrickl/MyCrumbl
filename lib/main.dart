@@ -5,6 +5,7 @@ import 'package:my_crumbl/firebase_options.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/authenticate/auth_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
+import 'package:my_crumbl/services/hive_service.dart';
 import 'package:my_crumbl/shared/color_schemes.g.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await HiveService.init();
+  HiveService.listenToFirestoreChanges();
+
   runApp(const MyCrumbl());
 }
 
