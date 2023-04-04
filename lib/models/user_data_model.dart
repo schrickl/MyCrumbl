@@ -31,6 +31,7 @@ class UserDataModel extends Equatable {
   static const defaultViewAll = 'all';
   static const defaultViewFavorites = 'favorites';
   static const defaultViewRated = 'rated';
+  static const defaultViewCurrent = 'current';
 
   const UserDataModel({
     required this.defaultView,

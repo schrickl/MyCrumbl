@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/tabs/all_cookies_tab.dart';
+import 'package:my_crumbl/pages/tabs/current_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/favorite_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/rated_cookies_tab.dart';
 import 'package:my_crumbl/services/data_repository.dart';
@@ -30,9 +31,12 @@ class _CookieListState extends State<CookieList>
       _defaultIndex = 1;
     } else if (widget.index == UserDataModel.defaultViewRated) {
       _defaultIndex = 2;
+    } else if (widget.index == UserDataModel.defaultViewCurrent) {
+      _defaultIndex = 3;
     }
+
     _tabController =
-        TabController(length: 3, vsync: this, initialIndex: _defaultIndex);
+        TabController(length: 4, vsync: this, initialIndex: _defaultIndex);
     _tabController.addListener(() {
       setState(() {
         _defaultIndex = _tabController.index;
@@ -50,12 +54,14 @@ class _CookieListState extends State<CookieList>
     Tab(text: 'All'),
     Tab(text: 'Favorites'),
     Tab(text: 'Rated'),
+    Tab(text: 'In Stores')
   ];
 
   final List<Widget> tabBarViews = [
     const AllCookiesTab(),
     const FavoriteCookiesTab(),
     const RatedCookiesTab(),
+    const CurrentCookiesTab(),
   ];
 
   @override
@@ -64,7 +70,7 @@ class _CookieListState extends State<CookieList>
     final UserDataModel? dataModel = Provider.of<UserDataModel?>(context);
 
     return DefaultTabController(
-      length: 3,
+      length: tabBarViews.length,
       child: Scaffold(
         body: Column(
           children: [
@@ -88,6 +94,11 @@ class _CookieListState extends State<CookieList>
                     await DataRepository(uid: currentUser!.uid)
                         .updateUserDataModel(dataModel!.copyWith(
                             defaultView: UserDataModel.defaultViewRated));
+                    break;
+                  case 3:
+                    await DataRepository(uid: currentUser!.uid)
+                        .updateUserDataModel(dataModel!.copyWith(
+                            defaultView: UserDataModel.defaultViewCurrent));
                     break;
                 }
               },

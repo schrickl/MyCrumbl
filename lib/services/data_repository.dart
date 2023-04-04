@@ -85,6 +85,20 @@ class DataRepository {
         });
   }
 
+  Stream<List<CookieModel>> get currentCookies {
+    return _instance
+        .collection('cookies')
+        .where('isCurrent', isEqualTo: true)
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => CookieModel.fromJson(doc.data()))
+            .toList())
+        .handleError((error) {
+      print('Error fetching current cookies: $error');
+      return <CookieModel>[];
+    });
+  }
+
   Future<void> addOrUpdateCookie(CookieModel cookie) async {
     try {
       final myCookiesRef =

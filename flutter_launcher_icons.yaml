@@ -1,6 +1,8 @@
 flutter_icons:
   android: "ic_launcher"
   ios: false
+  # Running this command again is gonna mess up the icons. A
+  # new icon will need to be created with a primary background to fix.
   image_path: "assets/images/splash.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
