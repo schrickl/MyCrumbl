@@ -216,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(
                 'OK',
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.tertiary,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold),
               ),
             ),
