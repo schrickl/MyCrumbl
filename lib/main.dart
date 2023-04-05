@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_crumbl/firebase_options.dart';
@@ -16,6 +17,9 @@ Future<void> main() async {
   );
   await HiveService.init();
   HiveService.listenToFirestoreChanges();
+
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print('FCM Token: $fcmToken');
 
   runApp(const MyCrumbl());
 }
@@ -39,7 +43,7 @@ class MyCrumbl extends StatelessWidget {
 
   ThemeData _appTheme(brightness) {
     final baseTheme =
-        ThemeData(useMaterial3: true, colorScheme: lightColorScheme);
+    ThemeData(useMaterial3: true, colorScheme: lightColorScheme);
 
     return baseTheme.copyWith(
       textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
