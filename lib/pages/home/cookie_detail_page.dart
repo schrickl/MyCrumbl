@@ -31,8 +31,6 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
       backgroundColor: Theme.of(context).colorScheme.secondary,
       appBar: AppBar(
         title: Text(widget.cookie.displayName),
-        backgroundColor: Theme.of(context).colorScheme.background,
-        elevation: 0,
       ),
       extendBodyBehindAppBar: false,
       body: FutureBuilder<String>(
@@ -128,7 +126,7 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                   const SizedBox(height: 10.0),
                   if (widget.cookie.isCurrent)
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
                       child: Text(
                         'Currently available at your local Crumbl!',
                         style: TextStyle(

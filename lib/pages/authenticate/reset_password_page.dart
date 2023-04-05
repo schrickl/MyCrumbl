@@ -28,16 +28,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Reset Password',
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 30),
         ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-        elevation: 0.0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: Theme.of(context).colorScheme.primary,

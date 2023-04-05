@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_crumbl/firebase_options.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
@@ -17,9 +17,6 @@ Future<void> main() async {
   );
   await HiveService.init();
   HiveService.listenToFirestoreChanges();
-
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  print('FCM Token: $fcmToken');
 
   runApp(const MyCrumbl());
 }
@@ -42,11 +39,28 @@ class MyCrumbl extends StatelessWidget {
   }
 
   ThemeData _appTheme(brightness) {
-    final baseTheme =
-    ThemeData(useMaterial3: true, colorScheme: lightColorScheme);
+    final baseTheme = ThemeData(
+      useMaterial3: true,
+      colorScheme: lightColorScheme,
+    );
 
     return baseTheme.copyWith(
       textTheme: GoogleFonts.robotoTextTheme(baseTheme.textTheme),
+      appBarTheme: baseTheme.appBarTheme.copyWith(
+        color: baseTheme.colorScheme.tertiary,
+        elevation: 0.0,
+        centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: baseTheme.colorScheme.primary,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.light,
+        ),
+        titleTextStyle: TextStyle(
+          color: baseTheme.colorScheme.primary,
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+        ),
+      ),
     );
   }
 }

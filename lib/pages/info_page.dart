@@ -29,15 +29,8 @@ class _InfoPageState extends State<InfoPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-        centerTitle: true,
-        elevation: 0.0,
-        title: Text(
+        title: const Text(
           'MyCrumbl Info',
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 30),
         ),
       ),
       body: Column(

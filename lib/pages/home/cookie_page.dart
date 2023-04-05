@@ -28,15 +28,8 @@ class _CookiePageState extends State<CookiePage> {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.tertiary,
-          centerTitle: true,
-          elevation: 0.0,
-          title: Text(
+          title: const Text(
             'MyCrumbl',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 30),
           ),
           actions: <Widget>[
             IconButton(
