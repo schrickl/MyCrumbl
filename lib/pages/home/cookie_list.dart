@@ -77,6 +77,8 @@ class _CookieListState extends State<CookieList>
             TabBar(
               controller: _tabController,
               labelColor: Theme.of(context).colorScheme.primary,
+              labelStyle:
+                  TextStyle(fontSize: MediaQuery.of(context).size.width / 32),
               tabs: tabs,
               onTap: (index) async {
                 switch (index) {

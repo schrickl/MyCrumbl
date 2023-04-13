@@ -1,28 +1,63 @@
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_crumbl/firebase_options.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/authenticate/auth_page.dart';
 import 'package:my_crumbl/services/auth_service.dart';
 import 'package:my_crumbl/services/hive_service.dart';
+import 'package:my_crumbl/services/notification_service.dart';
 import 'package:my_crumbl/shared/color_schemes.g.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // AwesomeNotifications().initialize('resource://drawable/res_notif_icon', [
+  //   NotificationChannel(
+  //     channelKey: 'basic_channel',
+  //     channelName: 'Basic Notifications',
+  //     channelDescription: 'Basic Notification Channel',
+  //     defaultColor: Colors.red,
+  //     importance: NotificationImportance.High,
+  //     channelShowBadge: true,
+  //   )
+  // ]);
+
+  await NotificationService.initializeLocalNotifications(debug: true);
+  await NotificationService.initializeRemoteNotifications(debug: true);
+  await NotificationService.getInitialNotificationAction();
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   await HiveService.init();
   HiveService.listenToFirestoreChanges();
 
   runApp(const MyCrumbl());
 }
 
-class MyCrumbl extends StatelessWidget {
+class MyCrumbl extends StatefulWidget {
   const MyCrumbl({super.key});
+
+  @override
+  State<MyCrumbl> createState() => _MyCrumblState();
+}
+
+class _MyCrumblState extends State<MyCrumbl> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Only after at least the action method is set, the notification events are delivered
+    NotificationService.initializeNotificationListeners();
+  }
+
+  @override
+  void dispose() {
+    AwesomeNotifications().dispose();
+    super.dispose();
+  }
 
   // This widget is the root of your application.
   @override

@@ -20,7 +20,7 @@ class HiveService {
   }
 
   static List<CookieModel> getItems() {
-    print(_box.values.toList().length);
+    print('box length: ' + _box.values.toList().length.toString());
     return _box.values.toList();
   }
 
