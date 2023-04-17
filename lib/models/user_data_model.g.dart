@@ -17,13 +17,9 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
 UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
     UserDataModel(
       defaultView: json['defaultView'] as String?,
-      myCookies: (json['myCookies'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
     );
 
 Map<String, dynamic> _$UserDataModelToJson(UserDataModel instance) =>
     <String, dynamic>{
       'defaultView': instance.defaultView,
-      'myCookies': instance.myCookies,
     };

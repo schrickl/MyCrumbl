@@ -26,7 +26,6 @@ class UserModel extends Equatable {
 @JsonSerializable(explicitToJson: true)
 class UserDataModel extends Equatable {
   final String? defaultView;
-  final List<String>? myCookies;
 
   static const defaultViewAll = 'all';
   static const defaultViewFavorites = 'favorites';
@@ -35,7 +34,6 @@ class UserDataModel extends Equatable {
 
   const UserDataModel({
     required this.defaultView,
-    required this.myCookies,
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) =>
@@ -44,27 +42,23 @@ class UserDataModel extends Equatable {
   Map<String, dynamic> toJson() => _$UserDataModelToJson(this);
 
   static UserDataModel get defaultUser {
-    return const UserDataModel(
-        defaultView: defaultViewAll, myCookies: <String>[]);
+    return const UserDataModel(defaultView: defaultViewAll);
   }
 
   UserDataModel copyWith({
     String? defaultView,
-    List<String>? myCookies,
   }) {
     return UserDataModel(
       defaultView: defaultView ?? this.defaultView,
-      myCookies: myCookies ?? this.myCookies,
     );
   }
 
   @override
-  List<Object?> get props => [defaultView, myCookies];
+  List<Object?> get props => [defaultView];
 
   @override
   String toString() {
     return 'UserDataModel{'
-        'defaultView: $defaultView, '
-        'myCookies: $myCookies}';
+        'defaultView: $defaultView';
   }
 }

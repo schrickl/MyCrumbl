@@ -5,6 +5,7 @@ import 'package:my_crumbl/pages/tabs/current_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/favorite_cookies_tab.dart';
 import 'package:my_crumbl/pages/tabs/rated_cookies_tab.dart';
 import 'package:my_crumbl/services/data_repository.dart';
+import 'package:my_crumbl/shared/loading_page.dart';
 import 'package:provider/provider.dart';
 
 class CookieList extends StatefulWidget {
@@ -20,6 +21,7 @@ class _CookieListState extends State<CookieList>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late int _defaultIndex;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -76,37 +78,51 @@ class _CookieListState extends State<CookieList>
           children: [
             TabBar(
               controller: _tabController,
-              labelColor: Theme.of(context).colorScheme.primary,
+              labelColor: Theme
+                  .of(context)
+                  .colorScheme
+                  .primary,
               labelStyle:
-                  TextStyle(fontSize: MediaQuery.of(context).size.width / 32),
+              TextStyle(fontSize: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 32),
               tabs: tabs,
               onTap: (index) async {
+                setState(() {
+                  _isLoading = true;
+                });
                 switch (index) {
                   case 0:
                     await DataRepository(uid: currentUser!.uid)
                         .updateUserDataModel(dataModel!.copyWith(
-                            defaultView: UserDataModel.defaultViewAll));
+                        defaultView: UserDataModel.defaultViewAll));
                     break;
                   case 1:
                     await DataRepository(uid: currentUser!.uid)
                         .updateUserDataModel(dataModel!.copyWith(
-                            defaultView: UserDataModel.defaultViewFavorites));
+                        defaultView: UserDataModel.defaultViewFavorites));
                     break;
                   case 2:
                     await DataRepository(uid: currentUser!.uid)
                         .updateUserDataModel(dataModel!.copyWith(
-                            defaultView: UserDataModel.defaultViewRated));
+                        defaultView: UserDataModel.defaultViewRated));
                     break;
                   case 3:
                     await DataRepository(uid: currentUser!.uid)
                         .updateUserDataModel(dataModel!.copyWith(
-                            defaultView: UserDataModel.defaultViewCurrent));
+                        defaultView: UserDataModel.defaultViewCurrent));
                     break;
                 }
+                setState(() {
+                  _isLoading = false;
+                });
               },
             ),
             Expanded(
-              child: TabBarView(
+              child: _isLoading ?
+              const LoadingPage() :
+              TabBarView(
                 controller: _tabController,
                 children: tabBarViews,
               ),

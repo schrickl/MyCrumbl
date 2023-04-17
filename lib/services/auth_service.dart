@@ -72,15 +72,10 @@ class AuthService {
   Future<void> createUserDataRecord(String? uid) async {
     final userDataRef =
         FirebaseFirestore.instance.collection('user_data').doc(uid);
-    final myCookiesRef = userDataRef.collection('my_cookies').doc();
 
     try {
       await userDataRef.set({
         'defaultView': UserDataModel.defaultViewAll,
-      });
-
-      await myCookiesRef.set({
-        'myCookies': [],
       });
     } catch (e) {
       print('Error creating user: $e');
