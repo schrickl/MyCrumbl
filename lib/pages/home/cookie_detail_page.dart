@@ -84,17 +84,19 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                             )
                           : const Icon(Icons.favorite_border,
                               color: Colors.red, size: 35.0),
-                      onPressed: () => setState(() {
-                        widget.cookie.isFavorite = !widget.cookie.isFavorite;
-                        if (widget.cookie.isFavorite) {
-                          _dataRepository.addOrUpdateCookie(widget.cookie);
-                        } else if (!widget.cookie.isFavorite &&
-                            double.parse(widget.cookie.rating) > 0) {
-                          _dataRepository.addOrUpdateCookie(widget.cookie);
-                        } else {
-                          _dataRepository.deleteCookie(widget.cookie);
-                        }
-                      }),
+                      onPressed: () => setState(
+                        () {
+                          widget.cookie.isFavorite = !widget.cookie.isFavorite;
+                          if (widget.cookie.isFavorite) {
+                            _dataRepository.addOrUpdateCookie(widget.cookie);
+                          } else if (!widget.cookie.isFavorite &&
+                              double.parse(widget.cookie.rating) > 0) {
+                            _dataRepository.addOrUpdateCookie(widget.cookie);
+                          } else {
+                            _dataRepository.deleteCookie(widget.cookie);
+                          }
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10.0),
@@ -115,10 +117,12 @@ class _CookieDetailPageState extends State<CookieDetailPage> {
                           color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                         onRatingUpdate: (rating) {
-                          setState(() {
-                            widget.cookie.rating = rating.toString();
-                            _dataRepository.addOrUpdateCookie(widget.cookie);
-                          });
+                          setState(
+                            () {
+                              widget.cookie.rating = rating.toString();
+                              _dataRepository.addOrUpdateCookie(widget.cookie);
+                            },
+                          );
                         },
                       ),
                     ),

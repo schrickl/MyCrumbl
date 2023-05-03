@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications_fcm/awesome_notifications_fcm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/models/user_data_model.dart';
 import 'package:my_crumbl/pages/home/cookie_list.dart';
@@ -19,6 +22,10 @@ class CookiePage extends StatefulWidget {
 
 class _CookiePageState extends State<CookiePage> with WidgetsBindingObserver {
   final AuthService _auth = AuthService();
+  late final StreamSubscription<QuerySnapshot> _allCookiesSubscription;
+  late final StreamSubscription<QuerySnapshot> _userCookiesSubscription;
+
+  bool _isListening = false;
 
   @override
   void initState() {
@@ -27,6 +34,28 @@ class _CookiePageState extends State<CookiePage> with WidgetsBindingObserver {
     getFirebaseMessagingToken();
     NotificationService.requireUserNotificationPermissions(context)
         .then((isAllowed) => updateNotificationsPermission(isAllowed));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final UserModel? currentUser = Provider.of<UserModel>(context);
+    print('CookiePage didChangeDependencies() _isListening: $_isListening');
+    // if (currentUser != null && !_isListening) {
+    //   _allCookiesSubscription =
+    //       DataRepository(uid: currentUser.uid).listenForAllCookieUpdates();
+    //   // _userCookiesSubscription =
+    //   //     DataRepository(uid: currentUser.uid).listenForUserCookieUpdates();
+    //   _isListening = true;
+    // }
+  }
+
+  @override
+  dispose() {
+    print('CookiePage dispose()');
+    //_allCookiesSubscription.cancel();
+    //_userCookiesSubscription.cancel();
+    super.dispose();
   }
 
   // If the widget was removed from the tree while the asynchronous platform

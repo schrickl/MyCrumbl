@@ -1,14 +1,14 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:my_crumbl/models/cookie_model.dart';
 import 'package:my_crumbl/services/data_repository.dart';
 import 'package:my_crumbl/shared/loading_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CookieSearchDelegate extends SearchDelegate<CookieModel> {
-  late final UnmodifiableListView<CookieModel> cookies;
-  DataRepository dataRepository =
-      DataRepository(uid: 'itCa4XJG66QVpPPwdnLshpE0oV63');
+  final String uid;
+  final int tabIndex;
+
+  CookieSearchDelegate({required this.uid, required this.tabIndex});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -22,7 +22,12 @@ class CookieSearchDelegate extends SearchDelegate<CookieModel> {
       IconButton(
         icon: const Icon(Icons.clear),
         onPressed: () {
-          query = '';
+          if (query.isEmpty) {
+            Navigator.pop(context);
+          } else {
+            query = '';
+            showSuggestions(context);
+          }
         },
       ),
     ];
@@ -40,39 +45,94 @@ class CookieSearchDelegate extends SearchDelegate<CookieModel> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return StreamBuilder<List<CookieModel>>(
-      stream: dataRepository.allCookies,
+    return FutureBuilder<List<CookieModel>>(
+      future: DataRepository(uid: uid).getFutureCookies(query, tabIndex),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final results = snapshot.data!
-              .where((cookie) => cookie.displayName
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
-              .toList();
-
-          return ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(results[index].displayName),
-                onTap: () {
-                  query = results[index].displayName;
-                  close(context, results[index]);
-                },
-              );
-            },
-          );
-        } else {
+        if (!snapshot.hasData) {
           return const Center(
             child: LoadingPage(),
           );
+        } else if (snapshot.data!.isEmpty) {
+          return Center(
+            child: Text(
+              ' 😫 No Cookies Found!',
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width / 16.0,
+              ),
+            ),
+          );
         }
+
+        final List<CookieModel>? matches = snapshot.data;
+        return ListView.separated(
+          itemCount: matches!.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: const Icon(Icons.cookie),
+              title: Text(matches[index].displayName),
+              onTap: () {
+                close(context, matches[index]);
+              },
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+                color: Theme.of(context).colorScheme.secondary, thickness: 2.0);
+          },
+        );
       },
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return const SizedBox.shrink();
+    return FutureBuilder<List<CookieModel>>(
+      future: DataRepository(uid: uid).getFutureCookies(query, tabIndex),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: LoadingPage(),
+          );
+        } else if (snapshot.data!.isEmpty) {
+          return Center(
+            child: Text(
+              ' 😫 No Cookies Found!',
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width / 16.0,
+              ),
+            ),
+          );
+        }
+
+        final List<CookieModel>? matches = snapshot.data;
+        return ListView.separated(
+          itemCount: matches!.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: const Icon(Icons.cookie),
+              title: Text(matches[index].displayName),
+              onTap: () {
+                query = matches[index].displayName;
+                showResults(context);
+              },
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+                color: Theme.of(context).colorScheme.secondary, thickness: 2.0);
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> saveSuggestions(String displayName) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('suggestions', displayName);
+  }
+
+  Future<String> getSuggestions() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('suggestions') ?? '';
   }
 }

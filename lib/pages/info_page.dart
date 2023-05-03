@@ -112,6 +112,23 @@ class _InfoPageState extends State<InfoPage> {
           ),
         ],
       ),
+      bottomSheet: Container(
+        height: 50,
+        child: ListTile(
+          title: const Text(
+            'Privacy Policy',
+            style: TextStyle(
+              color: Colors.blue,
+              fontSize: 20,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          onTap: () async {
+            await launch(Uri.parse(
+                'https://www.freeprivacypolicy.com/live/1282bd9f-6bd1-44f1-9da8-3ff1e9893d9f'));
+          },
+        ),
+      ),
     );
   }
 

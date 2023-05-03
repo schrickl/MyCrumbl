@@ -36,6 +36,7 @@ class _CookieRowState extends State<CookieRow> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Flexible(
+            flex: 1,
             child: SizedBox(
               width: 50,
               height: 50,
@@ -50,10 +51,11 @@ class _CookieRowState extends State<CookieRow> {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(
-            flex: 2,
+          Flexible(
+            flex: 3,
+            fit: FlexFit.tight,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.cookie.displayName,
@@ -84,7 +86,8 @@ class _CookieRowState extends State<CookieRow> {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(
+          Flexible(
+            flex: 1,
             child: IconButton(
               icon: widget.cookie.isFavorite
                   ? Icon(Icons.favorite,

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:my_crumbl/pages/home/cookie_detail_page.dart';
 import 'package:my_crumbl/services/cookie_search_delegate.dart';
 
+import '../pages/home/cookie_detail_page.dart';
+
 class MyCrumblSearchWidget extends StatelessWidget {
-  const MyCrumblSearchWidget({Key? key}) : super(key: key);
+  final String uid;
+  final int tabIndex;
+
+  const MyCrumblSearchWidget(
+      {Key? key, required this.uid, required this.tabIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +28,23 @@ class MyCrumblSearchWidget extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          final query = await showSearch(
+          final displayName = await showSearch(
             context: context,
-            delegate: CookieSearchDelegate(),
+            delegate: CookieSearchDelegate(uid: uid, tabIndex: tabIndex),
           );
-          if (query == null) {
+          if (displayName == null) {
             return;
           }
+
+          // await DataRepository(uid: uid)
+          //     .fetchCookie(displayName)
+          //     .then((cookie) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => CookieDetailPage(cookie: query),
+              builder: (context) => CookieDetailPage(cookie: displayName),
             ),
           );
+          // });
         },
         label: const Text('Search for a cookie by name'),
       ),

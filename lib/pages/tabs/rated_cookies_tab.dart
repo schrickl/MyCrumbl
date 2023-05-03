@@ -36,7 +36,7 @@ class _RatedCookiesTabState extends State<RatedCookiesTab> {
 
             return Column(
               children: [
-                const MyCrumblSearchWidget(),
+                MyCrumblSearchWidget(uid: _currentUser.uid, tabIndex: 2),
                 Expanded(
                   child: SingleChildScrollView(
                     child: ListView.separated(

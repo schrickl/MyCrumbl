@@ -36,7 +36,7 @@ class _FavoriteCookiesTabState extends State<FavoriteCookiesTab> {
 
             return Column(
               children: [
-                const MyCrumblSearchWidget(),
+                MyCrumblSearchWidget(uid: _currentUser.uid, tabIndex: 1),
                 Expanded(
                   child: SingleChildScrollView(
                     child: ListView.separated(
